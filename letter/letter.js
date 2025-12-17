@@ -138,14 +138,18 @@ if (window.firebaseConfig){
   }
 }
 
+let lastDeleted = null;
+const LOCAL_TRASH = 'local_letters_trash_v1';
+
 if (useFirestore){
-  // listen to real-time letters in chronological order
+  // listen to real-time letters; filter out soft-deleted items client-side
   db.collection('letters').orderBy('createdAt','asc').onSnapshot(snap => {
     const items = [];
     snap.forEach(doc => {
       const data = doc.data();
+      if (data && data.deleted) return; // skip deleted
       const ts = data.createdAt && data.createdAt.toMillis ? data.createdAt.toMillis() : (data.createdAt || Date.now());
-      items.push({id: doc.id, name: data.name||'', text: data.text||'', createdAt: ts, side: data.side||'left'});
+      items.push({id: doc.id, text: data.text||'', createdAt: ts, side: data.side||'left'});
     });
     renderLetters(items);
   }, err => { console.error('Letters snapshot error', err); loadLocalLetters(); });
@@ -217,7 +221,9 @@ async function openEdit(div, item){
   actions.style.marginTop = '8px';
   const save = document.createElement('button'); save.textContent = 'Save'; save.style.background = 'var(--accent)'; save.style.color='#fff'; save.style.border='none'; save.style.padding='6px 10px'; save.style.borderRadius='8px';
   const cancel = document.createElement('button'); cancel.textContent = 'Cancel'; cancel.style.border='1px solid rgba(0,0,0,0.06)'; cancel.style.padding='6px 10px'; cancel.style.borderRadius='8px';
+  const del = document.createElement('button'); del.textContent = 'Delete'; del.style.background = '#ffe9ec'; del.style.color='#b83b5e'; del.style.border='1px solid rgba(184,59,94,0.08)'; del.style.padding='6px 10px'; del.style.borderRadius='8px';
   actions.appendChild(save); actions.appendChild(cancel);
+  actions.appendChild(del);
   div.appendChild(ta); div.appendChild(dt); div.appendChild(actions);
   ta.focus();
 
@@ -242,6 +248,32 @@ async function openEdit(div, item){
     }
     renderCurrentState();
   });
+  
+  del.addEventListener('click', async ()=>{
+    if (!confirm('Move this message to Trash? You can undo for a few seconds.')) return;
+    // perform soft delete: mark deleted in Firestore or move to local trash
+    if (useFirestore && db && item.id){
+      try{
+        await db.collection('letters').doc(item.id).update({ deleted: true, deletedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        lastDeleted = { source: 'fire', id: item.id, doc: item };
+      }catch(e){
+        console.error('Failed to soft-delete in Firestore:', e);
+      }
+    } else {
+      const cur = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+      const idx = cur.findIndex(k => k.id === item.id);
+      if (idx !== -1){
+        const removed = cur.splice(idx,1)[0];
+        const trash = JSON.parse(localStorage.getItem(LOCAL_TRASH) || '[]');
+        trash.push(removed);
+        localStorage.setItem(LOCAL_TRASH, JSON.stringify(trash));
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(cur));
+        lastDeleted = { source: 'local', item: removed };
+      }
+    }
+    renderCurrentState();
+    showUndoToast();
+  });
 }
 
 function renderCurrentState(){
@@ -251,6 +283,57 @@ function renderCurrentState(){
   }
   loadLocalLetters();
   // if Firestore is used, snapshot will re-render shortly
+}
+
+// Undo toast UI
+function showUndoToast(){
+  let existing = document.getElementById('undoToast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.id = 'undoToast';
+  el.style.position = 'fixed';
+  el.style.left = '50%';
+  el.style.transform = 'translateX(-50%)';
+  el.style.bottom = '22px';
+  el.style.background = '#fff';
+  el.style.padding = '10px 14px';
+  el.style.borderRadius = '12px';
+  el.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
+  el.style.zIndex = 12010;
+  el.innerHTML = '<span style="margin-right:10px">Message moved to Trash</span>';
+  const undo = document.createElement('button');
+  undo.textContent = 'Undo';
+  undo.style.background = 'transparent';
+  undo.style.border = 'none';
+  undo.style.color = 'var(--accent)';
+  undo.style.fontWeight = '700';
+  undo.style.cursor = 'pointer';
+  el.appendChild(undo);
+  document.body.appendChild(el);
+
+  const timeout = setTimeout(()=>{ el.remove(); lastDeleted = null; }, 6000);
+
+  undo.addEventListener('click', async ()=>{
+    clearTimeout(timeout);
+    if (!lastDeleted){ el.remove(); return; }
+    if (lastDeleted.source === 'fire'){
+      try{ await db.collection('letters').doc(lastDeleted.id).update({ deleted: false, deletedAt: null }); }
+      catch(e){ console.error('undo fire failed', e); }
+    } else if (lastDeleted.source === 'local'){
+      const trash = JSON.parse(localStorage.getItem(LOCAL_TRASH) || '[]');
+      const idx = trash.findIndex(t=>t.id === lastDeleted.item.id);
+      if (idx !== -1){
+        const restored = trash.splice(idx,1)[0];
+        const cur = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+        cur.push(restored);
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(cur));
+        localStorage.setItem(LOCAL_TRASH, JSON.stringify(trash));
+      }
+    }
+    lastDeleted = null;
+    el.remove();
+    renderCurrentState();
+  });
 }
 
 clearBtn && clearBtn.addEventListener('click', ()=>{

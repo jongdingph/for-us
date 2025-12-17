@@ -167,6 +167,9 @@
 .msg-actions .edit-btn{background:transparent;border:none;font-size:14px;color:rgba(0,0,0,0.45);cursor:pointer;padding:6px;border-radius:6px}
 .msg-actions .edit-btn:hover{background:rgba(0,0,0,0.04)}
 
+/* undo toast */
+#undoToast{font-family: 'Quicksand', sans-serif}
+
 /* Date under each letter */
 .letter .date {
   display: block;
