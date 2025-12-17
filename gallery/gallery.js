@@ -337,10 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
   closeBtn.addEventListener('click', ()=> lightbox.style.display='none');
   lightbox.addEventListener('click', e=> { if(e.target===lightbox) lightbox.style.display='none'; });
 
-  // Hamburger toggle
-  const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('nav-links');
-  if(hamburger) hamburger.addEventListener('click', ()=>{ navLinks.classList.toggle('active'); hamburger.classList.toggle('open'); });
+  // Hamburger handled by assets/main.js
 
   // Load saved local items
   loadLocalItems();

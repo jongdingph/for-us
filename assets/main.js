@@ -110,6 +110,38 @@
     });
   }
 
+  // ---------- Hamburger (mobile) unified handler ----------
+  function initHamburger(){
+    document.querySelectorAll('.hamburger').forEach(h => {
+      const nav = h.parentElement.querySelector('.nav-links');
+      if (!nav) return;
+      h.setAttribute('role','button');
+      h.setAttribute('aria-label','Toggle navigation');
+      h.setAttribute('aria-expanded','false');
+      h.setAttribute('tabindex','0');
+      h.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const open = h.classList.toggle('open');
+        nav.classList.toggle('active', open);
+        h.setAttribute('aria-expanded', String(open));
+      });
+      // keyboard activation (Enter / Space)
+      h.addEventListener('keydown', (ev)=>{
+        if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); h.click(); }
+      });
+      // close when clicking a link
+      nav.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=>{
+        h.classList.remove('open'); nav.classList.remove('active'); h.setAttribute('aria-expanded','false');
+      }));
+      // close when clicking outside
+      document.addEventListener('click', (ev)=>{
+        if (!nav.contains(ev.target) && !h.contains(ev.target)){
+          h.classList.remove('open'); nav.classList.remove('active'); h.setAttribute('aria-expanded','false');
+        }
+      });
+    });
+  }
+
   // ---------- Clickable heart animation ----------
   function createHeart(x, y) {
     const heart = document.createElement('div');
@@ -216,6 +248,7 @@
     if (config.upcomingPlan) setupCountdown('cd-upcoming', config.upcomingPlan, 'Upcoming Plan');
     showMemory();
     initTheme();
+    initHamburger();
     initHearts();
     initFloatingHearts();
     initMusicWidget();

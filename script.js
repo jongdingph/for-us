@@ -77,11 +77,4 @@ function changePhoto() {
     introPhoto.classList.add("show");
   }, 300);
 }
-const hamburger = document.getElementById('hamburger');
-const navLinks = document.getElementById('nav-links');
-
-hamburger.addEventListener('click', () => {
-  navLinks.classList.toggle('active');
-  // Animate hamburger
-  hamburger.classList.toggle('open');
-});
+// Hamburger behavior is handled globally in assets/main.js

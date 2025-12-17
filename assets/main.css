@@ -28,6 +28,21 @@ body{font-family:'Quicksand',system-ui,Arial;background:var(--bg);color:var(--te
 .nav-links a{color:var(--text);text-decoration:none;padding:6px 10px;border-radius:8px}
 .nav-links a.active{background:var(--accent-2);color:var(--text)}
 
+/* Hamburger button (responsive) */
+.hamburger{display:none;width:46px;height:38px;border-radius:10px;align-items:center;justify-content:center;padding:6px;cursor:pointer;border:none;background:transparent}
+.hamburger span{display:block;width:20px;height:2.5px;background:var(--accent);border-radius:2px;transition:transform .25s ease,opacity .2s ease,background .2s ease}
+.hamburger span + span{margin-top:5px}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile nav overlay handled by .nav-links.active */
+@media (max-width: 900px){
+  .hamburger{display:flex}
+  .nav-links{position:fixed;top:72px;right:16px;flex-direction:column;background:var(--card);backdrop-filter:blur(6px);padding:16px;border-radius:12px;gap:12px;transform:translateY(-10px);opacity:0;visibility:hidden;transition:opacity .24s ease,transform .24s ease,visibility .24s}
+  .nav-links.active{opacity:1;visibility:visible;transform:translateY(0)}
+}
+
 .theme-toggle{background:linear-gradient(135deg,var(--accent),#ffd1e9);border:none;padding:8px;border-radius:999px;cursor:pointer;box-shadow:var(--shadow);}
 
 /* Daily message card */
