@@ -81,38 +81,26 @@
 .letter-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
+  max-height: calc(68vh);
+  overflow-y: auto;
+  padding: 12px;
 }
 
-.letter {
-  max-width: 65%;
-  padding: 15px 20px;
-  border-radius: 20px;
-  position: relative;
-  animation: fadeSlide 0.6s ease;
-}
-
-.letter.left {
-  background: #ffe3f0;
-  align-self: flex-start;
-  border-top-left-radius: 5px;
-}
-
-.letter.right {
-  background: #ffd1e0;
-  align-self: flex-end;
-  border-top-right-radius: 5px;
+.letter{ /* simpler container for any default usage */
+  margin-bottom:6px;
 }
 /* ----------------------------
    LETTER PAGE - CUTE PINK THEME
 ---------------------------- */
 .letter-section {
-  width: 90%;
-  max-width: 900px;
-  margin: 120px auto 60px auto; /* margin-top to account for navbar */
-  text-align: center;
+  width: 94%;
+  max-width: 920px;
+  margin: 80px auto 20px auto;
+  text-align: left;
   position: relative;
   z-index: 1;
+  padding-bottom: 120px; /* room for the fixed input */
 }
 
 .letter-section h1 {
@@ -122,15 +110,15 @@
 }
 
 .letter-description {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #444;
-  margin-bottom: 30px;
-  line-height: 1.6;
-  background: #ffeef4;
-  padding: 15px 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  animation: fadeIn 1s ease;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  animation: fadeIn 0.8s ease;
 }
 
 .letters-container {
@@ -141,29 +129,37 @@
 
 /* Letter bubble styles */
 .letter {
-  max-width: 70%;
-  padding: 12px 18px;
-  border-radius: 20px;
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 16px;
   position: relative;
-  animation: fadeUp 0.6s ease;
+  animation: fadeUp 0.44s ease;
   word-wrap: break-word;
+  display: inline-block;
 }
 
 .letter.left {
   background: #fff;
   color: #444;
   align-self: flex-start;
-  border-top-left-radius: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .letter.right {
-  background: #ffcade;
-  color: #444;
+  background: linear-gradient(135deg,#ffdfe8,#ffcade);
+  color: #222;
   align-self: flex-end;
-  border-top-right-radius: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 16px;
+  border-top-left-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
+
+.letter .sender { display:block;font-size:0.78rem;color:#8b6b6b;margin-bottom:6px }
+.letter .meta { display:block;font-size:0.72rem;color:#a88; margin-top:8px; text-align:right }
 
 /* Date under each letter */
 .letter .date {
@@ -241,6 +237,34 @@
     display: flex;
   }
 }
+
+/* chat write bar fixed to bottom */
+.write-letter{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  max-width:920px;
+  margin:auto;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:10px;
+  background:var(--card);
+  border-radius:999px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  z-index:12005;
+}
+.write-letter input, .write-letter textarea{border-radius:999px;border:1px solid rgba(0,0,0,0.06);padding:8px}
+.write-letter textarea{flex:1;height:44px;resize:none}
+.write-letter button{border-radius:999px;padding:8px 12px;cursor:pointer;border:none}
+
+/* ensure chat area has comfortable spacing */
+.letter-container{background:transparent;padding-bottom:18px}
+
+/* auto-scroll hint */
+.letter-container::-webkit-scrollbar{width:6px}
+.letter-container::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:999px}
 /* ----------------------------
    FLOATING HEARTS
 ---------------------------- */

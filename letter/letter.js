@@ -39,10 +39,12 @@ const observer = new IntersectionObserver(entries => {
   threshold: 0.1
 });
 
+// expose observer so dynamically added messages can be observed
+window.letterObserver = observer;
 letters.forEach(letter => {
   letter.style.opacity = 0;
   letter.style.transform = 'translateY(20px)';
-  observer.observe(letter);
+  window.letterObserver.observe(letter);
 });
 
 // Hamburger behavior handled in assets/main.js
@@ -60,31 +62,48 @@ const LOCAL_KEY = 'local_letters_v1';
 
 function renderLetters(items){
   lettersContainer.innerHTML = '';
+  // ensure items are chronological (oldest first)
+  items.sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
   items.forEach(it => {
     const div = document.createElement('div');
     div.className = 'letter ' + (it.side || 'left');
+    // optional sender
+    if (it.name){
+      const s = document.createElement('span');
+      s.className = 'sender';
+      s.textContent = it.name;
+      div.appendChild(s);
+    }
     const p = document.createElement('p');
     p.textContent = it.text;
     const meta = document.createElement('span');
-    meta.className = 'date';
-    const who = it.name ? (it.name + ' · ') : '';
+    meta.className = 'meta';
+    const who = it.name ? '' : '';
     const d = it.createdAt ? new Date(it.createdAt).toLocaleString() : '';
-    meta.textContent = who + d;
+    meta.textContent = (who + d).trim();
     div.appendChild(p);
     div.appendChild(meta);
     lettersContainer.appendChild(div);
+    // animate and let observer pick up
+    if (window.letterObserver) {
+      window.letterObserver.observe(div);
+    }
   });
+  // auto-scroll to bottom like a chat
+  setTimeout(()=>{ lettersContainer.scrollTop = lettersContainer.scrollHeight; }, 40);
 }
 
 function saveLocalLetter(obj){
   const cur = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
-  cur.unshift(obj);
+  cur.push(obj);
   localStorage.setItem(LOCAL_KEY, JSON.stringify(cur));
   renderLetters(cur);
 }
 
 function loadLocalLetters(){
   const cur = JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]');
+  // ensure chronological
+  cur.sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
   renderLetters(cur);
 }
 
@@ -103,12 +122,13 @@ if (window.firebaseConfig){
 }
 
 if (useFirestore){
-  // listen to real-time letters
-  db.collection('letters').orderBy('createdAt','desc').onSnapshot(snap => {
+  // listen to real-time letters in chronological order
+  db.collection('letters').orderBy('createdAt','asc').onSnapshot(snap => {
     const items = [];
     snap.forEach(doc => {
       const data = doc.data();
-      items.push({name: data.name||'', text: data.text||'', createdAt: data.createdAt ? data.createdAt.toMillis ? data.createdAt.toMillis() : data.createdAt : Date.now(), side: data.side||'left'});
+      const ts = data.createdAt && data.createdAt.toMillis ? data.createdAt.toMillis() : (data.createdAt || Date.now());
+      items.push({name: data.name||'', text: data.text||'', createdAt: ts, side: data.side||'left'});
     });
     renderLetters(items);
   }, err => { console.error('Letters snapshot error', err); loadLocalLetters(); });
