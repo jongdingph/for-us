@@ -55,7 +55,6 @@ letters.forEach(letter => {
 const lettersContainer = document.querySelector('.letter-container');
 const sendBtn = document.getElementById('sendLetter');
 const clearBtn = document.getElementById('clearLetters');
-const nameInput = document.getElementById('letterName');
 const textInput = document.getElementById('letterText');
 
 const LOCAL_KEY = 'local_letters_v1';
@@ -138,14 +137,15 @@ if (useFirestore){
 
 sendBtn && sendBtn.addEventListener('click', async ()=>{
   const text = (textInput.value || '').trim();
-  const name = (nameInput.value || '').trim();
+  const name = '';
   if (!text) return;
-  const payload = { name, text, createdAt: Date.now(), side: 'right' };
+  const payload = { text, createdAt: Date.now(), side: 'right' };
   if (useFirestore && db){
     try{
-      await db.collection('letters').add({ name, text, createdAt: firebase.firestore.FieldValue.serverTimestamp(), side: 'right' });
+      await db.collection('letters').add({ text, createdAt: firebase.firestore.FieldValue.serverTimestamp(), side: 'right' });
       textInput.value = '';
-      nameInput.value = '';
+      // keep focus on input
+      textInput.focus();
     }catch(e){
       console.error('Failed to send to Firestore, saving locally', e);
       saveLocalLetter(payload);
@@ -154,6 +154,14 @@ sendBtn && sendBtn.addEventListener('click', async ()=>{
   } else {
     saveLocalLetter(payload);
     textInput.value = '';
+  }
+});
+
+// allow Enter to send (Shift+Enter for newline)
+textInput && textInput.addEventListener('keydown', (e)=>{
+  if (e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendBtn && sendBtn.click();
   }
 });
 
