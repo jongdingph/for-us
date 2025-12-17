@@ -65,5 +65,74 @@ document.addEventListener('DOMContentLoaded', () => {
       currentAudio.currentTime = (currentAudio.duration || 0) * pct;
     });
   }
+  // next / prev and autoplay-next + persistence
+  const npPrev = document.getElementById('npPrev');
+  const npNext = document.getElementById('npNext');
+  let currentIndex = null;
+  const STORAGE_INDEX = 'forus_last_track_v1';
+  const STORAGE_TIME = 'forus_last_time_v1';
+  const AUTOPLAY_NEXT = true;
+
+  function setCurrentByIndex(i){
+    if (i == null || i < 0 || i >= audios.length) return;
+    currentIndex = i;
+    currentAudio = audios[i];
+    const title = currentAudio.dataset.title || currentAudio.querySelector('source')?.getAttribute('src') || 'Playing';
+    if (np){ npTitle.textContent = title; np.setAttribute('aria-hidden','false'); }
+    // update cover
+    const cover = document.querySelector('.np-cover');
+    const coverSrc = currentAudio.dataset.cover || currentAudio.closest('.song-item')?.dataset.cover;
+    if (cover && coverSrc) cover.style.backgroundImage = `url('${coverSrc}')`;
+  }
+
+  // handle ended -> next
+  audios.forEach((a, idx)=>{
+    a.addEventListener('ended', ()=>{
+      if (AUTOPLAY_NEXT){
+        const next = (idx+1) % audios.length;
+        audios[next].play();
+      }
+    });
+    a.addEventListener('play', ()=>{ currentIndex = audios.indexOf(a); setCurrentByIndex(currentIndex); });
+  });
+
+  if (npPrev){ npPrev.addEventListener('click', ()=>{ if (currentIndex==null) return; const prev = (currentIndex-1+audios.length)%audios.length; audios[prev].play(); }); }
+  if (npNext){ npNext.addEventListener('click', ()=>{ if (currentIndex==null) return; const next = (currentIndex+1)%audios.length; audios[next].play(); }); }
+
+  // persistence: restore last track/time if available
+  const lastIndex = parseInt(localStorage.getItem(STORAGE_INDEX));
+  const lastTime = parseFloat(localStorage.getItem(STORAGE_TIME));
+  if (!isNaN(lastIndex) && audios[lastIndex]){
+    // wait for metadata then set time
+    const target = audios[lastIndex];
+    const applyTime = ()=>{
+      if (!isNaN(lastTime) && isFinite(lastTime) && lastTime > 0){
+        try{ target.currentTime = Math.min(lastTime, target.duration || lastTime); }catch(e){}
+      }
+      setCurrentByIndex(lastIndex);
+    };
+    if (target.readyState >= 1) applyTime(); else target.addEventListener('loadedmetadata', applyTime, {once:true});
+  }
+
+  // save periodically on timeupdate (throttled) and on pause
+  let lastSavedAt = 0;
+  audios.forEach((a, idx)=>{
+    a.addEventListener('timeupdate', ()=>{
+      const now = Date.now();
+      if (now - lastSavedAt > 5000){
+        localStorage.setItem(STORAGE_INDEX, String(idx));
+        localStorage.setItem(STORAGE_TIME, String(a.currentTime));
+        lastSavedAt = now;
+      }
+    });
+    a.addEventListener('pause', ()=>{
+      localStorage.setItem(STORAGE_INDEX, String(idx));
+      localStorage.setItem(STORAGE_TIME, String(a.currentTime));
+    });
+    window.addEventListener('beforeunload', ()=>{
+      localStorage.setItem(STORAGE_INDEX, String(idx));
+      localStorage.setItem(STORAGE_TIME, String(a.currentTime));
+    });
+  });
 });
 // Hamburger behavior handled globally in assets/main.js

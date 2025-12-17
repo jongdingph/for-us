@@ -37,30 +37,30 @@
       <div class="song-box">
         <h2>Song for Me 💖</h2>
         <div class="song-list">
-          <div class="song-item track">
-            <div class="cover" aria-hidden="true"></div>
+          <div class="song-item track" data-cover="../images/p1.jpg">
+            <div class="cover" aria-hidden="true" style="background-image:url('../images/p1.jpg')"></div>
             <div class="track-meta">
               <p class="track-title">Mirrors - Justin Timberlake</p>
-              <audio controls data-title="Mirrors - Justin Timberlake"><source src="mirror.mp3" type="audio/mpeg"></audio>
+              <audio controls data-title="Mirrors - Justin Timberlake" data-cover="../images/p1.jpg"><source src="mirror.mp3" type="audio/mpeg"></audio>
             </div>
           </div>
-          <div class="song-item"><p>About you - 1975</p>
-            <audio controls data-title="About You - The 1975"><source src="aboutyou.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/p2.jpg"><p>About you - 1975</p>
+            <audio controls data-title="About You - The 1975" data-cover="../images/p2.jpg"><source src="aboutyou.mp3" type="audio/mpeg"></audio>
           </div>
-          <div class="song-item"><p>Style - Taylor Swift</p>
-            <audio controls data-title="Style - Taylor Swift"><source src="style.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/p3.jpg"><p>Style - Taylor Swift</p>
+            <audio controls data-title="Style - Taylor Swift" data-cover="../images/p3.jpg"><source src="style.mp3" type="audio/mpeg"></audio>
           </div>
-          <div class="song-item"><p>The Alchemy - Taylor Swift</p>
-            <audio controls data-title="The Alchemy - Taylor Swift"><source src="alchemy.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/p4.jpg"><p>The Alchemy - Taylor Swift</p>
+            <audio controls data-title="The Alchemy - Taylor Swift" data-cover="../images/p4.jpg"><source src="alchemy.mp3" type="audio/mpeg"></audio>
           </div>
-          <div class="song-item"><p>The Only Exception - Paramore</p>
-            <audio controls data-title="The Only Exception - Paramore"><source src="paramore.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/p5.jpg"><p>The Only Exception - Paramore</p>
+            <audio controls data-title="The Only Exception - Paramore" data-cover="../images/p5.jpg"><source src="paramore.mp3" type="audio/mpeg"></audio>
           </div>
-          <div class="song-item"><p>Sure Thing - Miguel</p>
-            <audio controls data-title="Sure Thing - Miguel"><source src="surething.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/p6.jpg"><p>Sure Thing - Miguel</p>
+            <audio controls data-title="Sure Thing - Miguel" data-cover="../images/p6.jpg"><source src="surething.mp3" type="audio/mpeg"></audio>
           </div>
-          <div class="song-item"><p>I Choose - Alessia</p>
-            <audio controls data-title="I Choose - Alessia"><source src="ichoose.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/IMG_20250522_185104.jpg"><p>I Choose - Alessia</p>
+            <audio controls data-title="I Choose - Alessia" data-cover="../images/IMG_20250522_185104.jpg"><source src="ichoose.mp3" type="audio/mpeg"></audio>
           </div>
         </div>
       </div>
@@ -68,15 +68,15 @@
       <div class="song-box">
         <h2>Song for my love 💖</h2>
         <div class="song-list">
-          <div class="song-item track">
-            <div class="cover" aria-hidden="true"></div>
+          <div class="song-item track" data-cover="../images/p7.jpg">
+            <div class="cover" aria-hidden="true" style="background-image:url('../images/p7.jpg')"></div>
             <div class="track-meta">
               <p class="track-title">Fireproof - One Direction</p>
-              <audio controls data-title="Fireproof - One Direction"><source src="fireproof.mp3" type="audio/mpeg"></audio>
+              <audio controls data-title="Fireproof - One Direction" data-cover="../images/p7.jpg"><source src="fireproof.mp3" type="audio/mpeg"></audio>
             </div>
           </div>
-          <div class="song-item"><p>Paraluman - Adie</p>
-            <audio controls data-title="Paraluman - Adie"><source src="paraluman.mp3" type="audio/mpeg"></audio>
+          <div class="song-item" data-cover="../images/p8.jpg"><p>Paraluman - Adie</p>
+            <audio controls data-title="Paraluman - Adie" data-cover="../images/p8.jpg"><source src="paraluman.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Mahika - Adie</p>
             <audio controls data-title="Mahika - Adie"><source src="mahika.mp3" type="audio/mpeg"></audio>
@@ -103,7 +103,7 @@
             <audio controls data-title="XXL - LANY"><source src="xxl.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Pink Skies - Lany</p>
-            <audio controls data-title="Pink Skies - LANY"><source src="pinkskies.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Pink Skies - LANY" data-cover="../images/p2.jpg"><source src="pinkskies.mp3" type="audio/mpeg"></audio>
           </div>
         </div>
       </div>
@@ -119,7 +119,9 @@
       </div>
     </div>
     <div class="np-controls">
+      <button id="npPrev" class="btn">Prev</button>
       <button id="npPlay" class="btn">Play</button>
+      <button id="npNext" class="btn">Next</button>
       <div id="npProgress" class="np-progress"><div class="np-progress-bar"></div></div>
     </div>
   </div>

@@ -79,6 +79,8 @@ body {
 .now-playing .np-info #npTitle{font-weight:700}
 .now-playing .np-controls{display:flex;align-items:center;gap:12px}
 .now-playing .btn{background:#e26d8a;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.now-playing .btn.secondary{background:#fff;border:1px solid #f0d3db;color:#e26d8a}
+.now-playing .btn:focus{outline:none;box-shadow:0 4px 14px rgba(226,109,138,0.12)}
 .np-progress{width:240px;height:8px;background:#f3e6ea;border-radius:8px;overflow:hidden}
 .np-progress-bar{width:0%;height:100%;background:linear-gradient(90deg,#ff88a8,#ff5f9e)}
 
