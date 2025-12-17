@@ -92,9 +92,13 @@
     $('#sinceFirstMeet').textContent = humanizeDays(sinceMs);
     $('#sinceFirstMeetTotal').textContent = Math.floor(sinceMs/(1000*60*60*24)) + ' days total';
 
-    // first chat length (days between meet and first date)
+    // first chat date and length (days between meet and first date)
     const chatMs = Math.abs(firstDateDate - firstMeetDate);
-    $('#firstChatLength').textContent = Math.floor(chatMs/(1000*60*60*24)) + ' days';
+    const chatDays = Math.floor(chatMs/(1000*60*60*24));
+    const firstChatEl = $('#firstChatDate');
+    if (firstChatEl) firstChatEl.textContent = firstDateDate.toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'});
+    const firstChatDaysEl = $('#firstChatDays');
+    if (firstChatDaysEl) firstChatDaysEl.textContent = chatDays + ' days (between meet & first date)';
 
     // next monthsary
     const nextM = nextOccurrence(MONTHSARY_MONTH, MONTHSARY_DAY);
