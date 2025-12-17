@@ -143,9 +143,16 @@ body {
 .plan-input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid #f4d6df;background:#fff}
 .plan-actions .add-plan-btn{padding:10px 12px;border-radius:10px}
 
-.filter-bar{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
-.filter-bar button{padding:8px 12px;border-radius:10px;border:1px solid transparent;background:#fff;color:#e05586;cursor:pointer}
-.filter-bar button.active{background:#e26d8a;color:#fff;border-color:rgba(0,0,0,0.03)}
+.filter-bar{display:flex;gap:8px;justify-content:center;margin:0 auto 18px;position:sticky;top:96px;z-index:1100;padding:8px 12px;background:transparent}
+.filter-bar button{padding:6px 12px;border-radius:999px;border:1px solid rgba(226,109,138,0.12);background:linear-gradient(180deg,#fff,#fffafc);color:#e05586;cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(226,109,138,0.06);transition:transform .12s ease,box-shadow .12s ease}
+.filter-bar button:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(226,109,138,0.10)}
+.filter-bar button::before{content:'♡';margin-right:6px;opacity:0.9}
+.filter-bar button.active{background:linear-gradient(90deg,#ff9fb6,#ff6b97);color:#fff;border-color:transparent;box-shadow:0 10px 30px rgba(255,95,158,0.12)}
+
+@media (max-width:640px){
+  .filter-bar{top:84px;padding:6px;gap:6px}
+  .filter-bar button{padding:6px 10px;font-size:0.9rem}
+}
 
 .plan-item.done{opacity:0.6;text-decoration:line-through;background:#fff6f8}
 .plan-item .delete-btn{margin-left:8px;background:transparent;border:none;color:#c04a6a;cursor:pointer}
