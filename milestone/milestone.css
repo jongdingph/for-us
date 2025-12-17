@@ -184,5 +184,19 @@ body {
 @media (max-width:640px){
   .milestone-stats{grid-template-columns:repeat(1,1fr)}
   .stat-card{padding:12px}
-  .timeline{padding:12px}
+  .timeline{padding:12px;padding-top:96px}
+}
+
+/* Page title styling (clears navbar and looks good on mobile) */
+.page-title{
+  text-align:center;
+  margin:0 0 14px 0;
+  padding:6px 12px;
+  font-size:1.9rem;
+  color:#e05586;
+  line-height:1.1;
+}
+
+@media (max-width:640px){
+  .page-title{font-size:1.6rem;margin-bottom:10px}
 }
