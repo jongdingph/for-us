@@ -12,8 +12,10 @@
   // ---------- Configuration (edit dates/images as needed) ----------
   const config = {
     // ISO dates for countdowns (update these to your real dates)
-    monthsary: '2026-01-19T00:00:00',
-    anniversary: '2026-11-28T00:00:00',
+    // Monthsary: December 28, 2025
+    monthsary: '2025-12-28T00:00:00',
+    // Anniversary: August 28, 2026
+    anniversary: '2026-08-28T00:00:00',
     upcomingPlan: null, // optional: '2026-02-14T18:00:00'
     // Memory images (paths relative to site root)
     memoryImages: [
@@ -68,7 +70,11 @@
     function tick() {
       const now = Date.now();
       const diff = target - now;
-      el.textContent = `${formatCountdown(diff)} until our ${label}`;
+      if (diff <= 0) {
+        el.textContent = `💕 Today is our ${label}!`;
+      } else {
+        el.textContent = `${formatCountdown(diff)} until our ${label}`;
+      }
     }
     tick();
     setInterval(tick, 1000);
