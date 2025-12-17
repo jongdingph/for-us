@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Gallery</title>
   <link rel="stylesheet" href="gallery.css">
+  <link rel="stylesheet" href="../assets/main.css">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
@@ -32,7 +33,14 @@
   <section class="gallery-section">
     <h1>Our Memories</h1>
 
-    <div class="memory-folders">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:900px;margin:0 auto 12px auto;padding:0 12px;">
+        <h2 style="color:var(--text);margin:0;font-size:1.4rem">Our Memories</h2>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <button id="addPhotosBtn" class="theme-toggle">+ Add Photos</button>
+        </div>
+      </div>
+
+      <div class="memory-folders">
       <div class="folder" data-folder="may19">
         <img src="https://static.vecteezy.com/system/resources/previews/000/547/596/original/hearts-icons-vectors-illustrations.jpg">
         <p>May 19, 2025</p>
@@ -53,6 +61,29 @@
         <p>November 28, 2025</p>
       </div>
     </div>
+
+    <!-- Add Photos Modal -->
+    <div id="addModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:2500">
+      <div style="background:var(--card);padding:18px;border-radius:14px;max-width:520px;width:92%;box-shadow:var(--shadow)">
+        <h3 style="margin-top:0">Add new photos</h3>
+        <label style="display:block;margin-bottom:8px">Choose images (multiple allowed)</label>
+        <input id="photoFiles" type="file" accept="image/*" multiple />
+        <label style="display:block;margin-top:10px">Folder label</label>
+        <input id="photoLabel" type="text" placeholder="e.g., Our Trip or Special Day" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+        <label style="display:block;margin-top:10px">Or choose a date (groups photos by date)</label>
+        <input id="photoDate" type="date" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="cancelAdd" class="theme-toggle" style="background:#fff">Cancel</button>
+          <button id="saveAdd" class="theme-toggle">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase (optional) - add your config in assets/firebase-config.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    <script src="../assets/firebase-config.js"></script>
 
     <!-- PHOTO GRIDS -->
     <div id="may19" class="photo-grid">
@@ -101,5 +132,6 @@
   </div>
 
   <script src="gallery.js"></script>
+  <script src="../assets/main.js"></script>
 </body>
 </html>

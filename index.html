@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Our Story — Home</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="assets/main.css" />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Navigation Bar -->
   <nav class="navbar">
   <div class="logo">♡ Us</div>
+  <button id="themeToggle" class="theme-toggle" title="Toggle theme">Theme</button>
   <div class="hamburger" id="hamburger">
     <span></span>
     <span></span>
@@ -37,6 +39,25 @@
     <a href="#intro" class="scroll-btn">Scroll Down</a>
   </section>
 
+  <!-- Daily Message -->
+  <section class="daily-card" aria-live="polite">
+    <h3>Love Note of the Day</h3>
+    <p>Loading something sweet...</p>
+  </section>
+
+  <!-- Countdown area -->
+  <section class="countdown-wrap">
+    <div id="cd-monthsary" class="countdown">💕 calculating...</div>
+    <div id="cd-anniversary" class="countdown">💕 calculating...</div>
+    <div id="cd-upcoming" class="countdown" style="display:none">💕 calculating...</div>
+  </section>
+
+  <!-- Memory of the Day -->
+  <section class="memory-card">
+    <img id="memoryImg" src="" alt="Memory of the Day">
+    <div class="memory-caption">Memory of the Day 💗</div>
+  </section>
+
   <!-- Introduction Section -->
   <section id="intro" class="intro-section">
     <h2>Welcome to Our Space</h2>
@@ -51,5 +72,6 @@
   </section>
 
   <script src="script.js"></script>
+  <script src="assets/main.js"></script>
 </body>
 </html>
