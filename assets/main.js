@@ -277,6 +277,27 @@
     initFloatingHearts();
     initMusicWidget();
     initScrollReveal();
+
+    // Fallback/simple hamburger handler for pages where the unified handler may not attach
+    try{
+      const hb = document.getElementById('hamburger');
+      const navLinks = document.getElementById('nav-links');
+      if (hb && navLinks){
+        hb.setAttribute('role','button'); hb.setAttribute('tabindex','0'); hb.setAttribute('aria-expanded','false');
+        const toggle = (ev)=>{
+          ev && ev.stopPropagation();
+          const open = hb.classList.toggle('open');
+          navLinks.classList.toggle('active', open);
+          hb.setAttribute('aria-expanded', String(open));
+          document.body.style.overflow = open ? 'hidden' : '';
+        };
+        hb.addEventListener('click', toggle);
+        hb.addEventListener('touchstart', (e)=>{ e.preventDefault(); toggle(e); }, {passive:false});
+        hb.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); toggle(e); } });
+        // close when clicking outside
+        document.addEventListener('click', (ev)=>{ if (!navLinks.contains(ev.target) && !hb.contains(ev.target)){ hb.classList.remove('open'); navLinks.classList.remove('active'); hb.setAttribute('aria-expanded','false'); document.body.style.overflow=''; } });
+      }
+    }catch(e){ console.warn('hamburger fallback failed', e); }
   });
 
 })();
