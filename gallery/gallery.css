@@ -299,3 +299,30 @@ body {
     height: 75px;
   }
 }
+.add-photo-box {
+  display: flex;
+  gap: 10px;
+  margin: 30px auto;
+  max-width: 500px;
+}
+
+.add-photo-box input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.add-photo-box button {
+  background: #e26d8a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.add-photo-box button:hover {
+  background: #d85c7c;
+}

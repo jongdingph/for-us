@@ -361,3 +361,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }, err => console.error('gallery snapshot error', err));
   }
 });
+

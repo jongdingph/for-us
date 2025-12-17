@@ -65,13 +65,16 @@
     <!-- Add Photos Modal -->
     <div id="addModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:2500">
       <div style="background:var(--card);padding:18px;border-radius:14px;max-width:520px;width:92%;box-shadow:var(--shadow)">
-        <h3 style="margin-top:0">Add new photos</h3>
-        <label style="display:block;margin-bottom:8px">Choose images (multiple allowed)</label>
-        <input id="photoFiles" type="file" accept="image/*" multiple />
-        <label style="display:block;margin-top:10px">Folder label</label>
-        <input id="photoLabel" type="text" placeholder="e.g., Our Trip or Special Day" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
-        <label style="display:block;margin-top:10px">Or choose a date (groups photos by date)</label>
-        <input id="photoDate" type="date" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+        <div class="add-photo-box">
+          <h2>Still in progress...</h2>
+          <input
+            type="text"
+            id="photoURL"
+            placeholder="https://i.imgur.com/hTL7jNK.png"
+          />
+          <button id="addPhotoBtn">Add Photo 💗</button>
+        </div>
+        <p>Adding photo in this section is not fully functional yet.</p>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
           <button id="cancelAdd" class="theme-toggle" style="background:#fff">Cancel</button>
           <button id="saveAdd" class="theme-toggle">Save</button>
