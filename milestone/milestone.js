@@ -97,6 +97,66 @@
   update();
   setInterval(update, 1000);
 
+  // --- Calendar rendering ---
+  const calEl = document.getElementById('calendar');
+  const calLabel = document.getElementById('calMonthLabel');
+  const prevBtn = document.getElementById('calPrev');
+  const nextBtn = document.getElementById('calNext');
+  let viewDate = new Date();
+
+  function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+
+  function renderCalendar(date){
+    if (!calEl) return;
+    calEl.innerHTML = '';
+    const start = startOfMonth(date);
+    const end = endOfMonth(date);
+    // header label
+    calLabel.textContent = date.toLocaleString(undefined,{month:'long', year:'numeric'});
+    // day names
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    dayNames.forEach(dn=>{ const el = document.createElement('div'); el.className='day-name'; el.textContent=dn; calEl.appendChild(el); });
+
+    // calculate first day's weekday
+    const firstWeekday = start.getDay();
+    // fill blanks
+    for(let i=0;i<firstWeekday;i++){ const el=document.createElement('div'); el.className='day-cell empty'; calEl.appendChild(el); }
+
+    // iterate days
+    for(let day=1; day<=end.getDate(); day++){
+      const cur = new Date(date.getFullYear(), date.getMonth(), day);
+      const cell = document.createElement('div'); cell.className='day-cell';
+      const dn = document.createElement('div'); dn.className='date-num'; dn.textContent = day; cell.appendChild(dn);
+
+      // check if this is monthsary or anniversary (compare month/day)
+      if (cur.getMonth()+1 === MONTHSARY_MONTH && cur.getDate() === MONTHSARY_DAY){
+        cell.classList.add('monthsary');
+        const badge = document.createElement('div'); badge.className='badge'; badge.textContent='Monthsary'; badge.style.background='rgba(255,95,158,0.12)'; badge.style.color='#ff5f9e'; cell.appendChild(badge);
+      }
+      if (cur.getMonth()+1 === ANNIV_MONTH && cur.getDate() === ANNIV_DAY){
+        cell.classList.add('anniv');
+        const badge = document.createElement('div'); badge.className='badge'; badge.textContent='Anniversary'; badge.style.background='rgba(224,85,134,0.08)'; badge.style.color='#e05586'; cell.appendChild(badge);
+      }
+
+      // labels for next occurrences within this month
+      const nextM = nextOccurrence(MONTHSARY_MONTH, MONTHSARY_DAY);
+      const nextA = nextOccurrence(ANNIV_MONTH, ANNIV_DAY);
+      if (cur.toDateString() === nextM.toDateString()){
+        const l = document.createElement('div'); l.className='label'; l.textContent='Next Monthsary'; cell.appendChild(l);
+      }
+      if (cur.toDateString() === nextA.toDateString()){
+        const l = document.createElement('div'); l.className='label'; l.textContent='Next Anniversary'; cell.appendChild(l);
+      }
+
+      calEl.appendChild(cell);
+    }
+  }
+
+  prevBtn && prevBtn.addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1, 1); renderCalendar(viewDate); });
+  nextBtn && nextBtn.addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1, 1); renderCalendar(viewDate); });
+  renderCalendar(viewDate);
+
   // expose for debugging
   window._milestones = { firstMeetDate, firstDateDate };
 })();
