@@ -43,6 +43,16 @@
   <!-- LETTER SECTION -->
   <section class="letter-section">
     <h1>Our Letters</h1>
+    <!-- Write a Letter (real-time) -->
+    <div class="write-letter" style="max-width:820px;margin:14px auto 6px;padding:12px;background:var(--card);border-radius:12px;box-shadow:var(--shadow)">
+      <input id="letterName" placeholder="Your name (optional)" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);margin-bottom:8px">
+      <textarea id="letterText" placeholder="Write a sweet letter..." rows="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button id="sendLetter" style="background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer">Send</button>
+        <button id="clearLetters" style="background:transparent;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:8px;cursor:pointer">Clear Local</button>
+      </div>
+    </div>
+
     <div class="letter-container">
         <div class="letter-description">
     <p>All letters that we've shared to each other will always go here; this will be a part of our memories.  
@@ -81,6 +91,10 @@ I appreciate you, your effort, your patience, your kulit, lahat lahat. Thankful 
     </div>
   </section>
 
+  <!-- Firebase (optional) - add your config in assets/firebase-config.js -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="../assets/firebase-config.js"></script>
   <script src="letter.js"></script>
   <script src="../assets/main.js"></script>
 </body>
