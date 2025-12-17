@@ -11,6 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveAdd = document.getElementById('saveAdd');
   const photoFiles = document.getElementById('photoFiles');
   const photoLabel = document.getElementById('photoLabel');
+  const photoDate = document.getElementById('photoDate');
+  // Edit/Delete modal elements
+  const editModal = document.getElementById('editModal');
+  const editThumbs = document.getElementById('editThumbs');
+  const editFiles = document.getElementById('editFiles');
+  const editLabel = document.getElementById('editLabel');
+  const editDate = document.getElementById('editDate');
+  const cancelEdit = document.getElementById('cancelEdit');
+  const saveEdit = document.getElementById('saveEdit');
+  const deleteModal = document.getElementById('deleteModal');
+  const cancelDelete = document.getElementById('cancelDelete');
+  const confirmDelete = document.getElementById('confirmDelete');
+  let currentEditing = null; // {id, docId?, images:[], label, date}
+  let pendingDeleteId = null;
 
   // localStorage key for user-added galleries
   const STORAGE_KEY = 'localGalleryItems_v1';
@@ -39,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
     div.appendChild(img);
     div.appendChild(p);
     div.addEventListener('click', () => showGrid(item.id));
+    // attach edit/delete actions for local or firebase items
+    attachFolderActions(div, item);
     return div;
   }
 
@@ -57,6 +73,20 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
     return grid;
+  }
+
+  // Attach action buttons to editable folder elements
+  function attachFolderActions(folderEl, item){
+    const id = item.id || folderEl.dataset.folder;
+    // only editable for local- or fb- items
+    if (!id || (!id.startsWith('local-') && !id.startsWith('fb-'))) return;
+    const actions = document.createElement('div'); actions.className='folder-actions';
+    const editBtn = document.createElement('button'); editBtn.className='folder-action'; editBtn.textContent='Edit';
+    const delBtn = document.createElement('button'); delBtn.className='folder-action delete'; delBtn.textContent='Delete';
+    actions.appendChild(editBtn); actions.appendChild(delBtn);
+    folderEl.appendChild(actions);
+    editBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openEditModal(id); });
+    delBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openDeleteModal(id); });
   }
 
   // Load saved items from localStorage and inject into DOM
@@ -102,6 +132,110 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
     }
   }
+
+  // ---------- Edit flow ----------
+  // Open edit modal: load current images and metadata
+  async function openEditModal(id){
+    currentEditing = { id, images: [], label: '', date: '' };
+    editThumbs.innerHTML = '';
+    editFiles.value = '';
+    // local
+    if (id.startsWith('local-')){
+      const raw = localStorage.getItem(STORAGE_KEY); const arr = raw ? JSON.parse(raw) : [];
+      const item = arr.find(x=>x.id===id);
+      if (!item) return alert('Item not found');
+      currentEditing.images = item.images.slice(); currentEditing.label = item.label; currentEditing.date = item.date; currentEditing.source='local';
+    } else if (id.startsWith('fb-') && db){
+      const docId = id.slice(3);
+      try{
+        const doc = await db.collection('gallery').doc(docId).get();
+        if (!doc.exists) return alert('Gallery item not found in Firestore');
+        const data = doc.data();
+        currentEditing.images = (data.images||[]).slice(); currentEditing.label = data.label||data.date||''; currentEditing.date = data.date||''; currentEditing.source='fb'; currentEditing.docId = docId;
+      }catch(e){ console.error(e); return alert('Failed to load item for editing'); }
+    } else return;
+
+    // populate UI
+    currentEditing.images.forEach((src, idx)=>{
+      const thumb = document.createElement('div'); thumb.style.position='relative'; thumb.style.margin='6px';
+      thumb.innerHTML = `<img src="${src}" style="width:120px;height:80px;object-fit:cover;border-radius:8px">`;
+      const rem = document.createElement('button'); rem.textContent='✕'; rem.style.position='absolute'; rem.style.right='2px'; rem.style.top='2px'; rem.style.background='rgba(0,0,0,0.5)'; rem.style.color='#fff'; rem.style.border='none'; rem.style.borderRadius='8px'; rem.style.cursor='pointer';
+      rem.addEventListener('click', ()=>{ // remove image
+        currentEditing.images.splice(idx,1); thumb.remove();
+      });
+      thumb.appendChild(rem); editThumbs.appendChild(thumb);
+    });
+    editLabel.value = currentEditing.label || '';
+    // set date input if parseable
+    try{ if (currentEditing.date) editDate.value = (new Date(currentEditing.date)).toISOString().slice(0,10); }catch(e){}
+    editModal.style.display='flex';
+  }
+
+  // Save edits
+  saveEdit.addEventListener('click', async ()=>{
+    if (!currentEditing) return;
+    saveEdit.disabled = true; saveEdit.textContent = 'Saving...';
+    const newFiles = Array.from(editFiles.files || []);
+    const newLabel = editLabel.value.trim();
+    const newDateVal = editDate.value;
+    const newDate = newDateVal ? (new Date(newDateVal)).toLocaleDateString() : currentEditing.date;
+    try{
+      // handle new files
+      if (newFiles.length){
+        if (currentEditing.source==='fb' && storage){
+          const upload = newFiles.map(f=>{ const ref = storage.ref().child(`gallery/${Date.now()}_${f.name}`); return ref.put(f).then(snap=>snap.ref.getDownloadURL()); });
+          const urls = await Promise.all(upload); currentEditing.images.push(...urls);
+        } else {
+          // read as dataURL
+          const reads = newFiles.map(f=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); }));
+          const dataurls = await Promise.all(reads); currentEditing.images.push(...dataurls);
+        }
+      }
+
+      // update storage: Firestore update or localStorage replace
+      if (currentEditing.source==='fb' && db){
+        await db.collection('gallery').doc(currentEditing.docId).update({ label: newLabel || currentEditing.label, date: newDate || currentEditing.date, images: currentEditing.images });
+      } else if (currentEditing.source==='local'){
+        const raw = localStorage.getItem(STORAGE_KEY); const arr = raw ? JSON.parse(raw) : [];
+        const idx = arr.findIndex(x=>x.id===currentEditing.id);
+        if (idx!==-1){ arr[idx].images = currentEditing.images; arr[idx].label = newLabel || currentEditing.label; arr[idx].date = newDate || currentEditing.date; localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+      }
+
+      // update DOM folder and grid
+      const folderEl = document.querySelector(`.folder[data-folder="${currentEditing.id}"]`);
+      if (folderEl){
+        const img = folderEl.querySelector('img'); if (currentEditing.images[0]) img.src = currentEditing.images[0];
+        const p = folderEl.querySelector('p'); p.textContent = newLabel || currentEditing.label || newDate || '';
+      }
+      const grid = document.getElementById(currentEditing.id);
+      if (grid){ grid.innerHTML = ''; currentEditing.images.forEach(src=>{ const im=document.createElement('img'); im.src=src; grid.appendChild(im); im.addEventListener('click', ()=>{ lightbox.style.display='flex'; lightboxImg.src = im.src; }); }); }
+
+      editModal.style.display='none'; currentEditing = null;
+    }catch(e){ console.error('save edit failed', e); alert('Failed to save changes.'); }
+    finally{ saveEdit.disabled = false; saveEdit.textContent = 'Save Changes'; }
+  });
+
+  cancelEdit.addEventListener('click', ()=>{ editModal.style.display='none'; currentEditing=null; });
+
+  // ---------- Delete flow ----------
+  function openDeleteModal(id){ pendingDeleteId = id; deleteModal.style.display='flex'; }
+  cancelDelete.addEventListener('click', ()=>{ pendingDeleteId = null; deleteModal.style.display='none'; });
+  confirmDelete.addEventListener('click', async ()=>{
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId; pendingDeleteId = null; deleteModal.style.display='none';
+    try{
+      if (id.startsWith('fb-') && db){
+        const docId = id.slice(3);
+        await db.collection('gallery').doc(docId).delete();
+      } else if (id.startsWith('local-')){
+        const raw = localStorage.getItem(STORAGE_KEY); const arr = raw ? JSON.parse(raw) : [];
+        const idx = arr.findIndex(x=>x.id===id); if (idx!==-1){ arr.splice(idx,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+      }
+      // remove DOM
+      const folderEl = document.querySelector(`.folder[data-folder="${id}"]`); if (folderEl) folderEl.remove();
+      const grid = document.getElementById(id); if (grid) grid.remove();
+    }catch(e){ console.error('delete failed', e); alert('Failed to delete item.'); }
+  });
 
   // Handle add photo flow
   addBtn.addEventListener('click', ()=>{ addModal.style.display='flex'; });
@@ -160,6 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = folder.dataset.folder;
       showGrid(id);
     });
+    // attach actions where appropriate (local/fb only)
+    const id = folder.dataset.folder;
+    const img = folder.querySelector('img');
+    const p = folder.querySelector('p');
+    const item = { id: id, images: [img?img.src:''], label: p? p.textContent : '' };
+    attachFolderActions(folder, item);
   });
 
   // Existing static grids: bind lightbox

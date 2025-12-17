@@ -79,6 +79,36 @@
       </div>
     </div>
 
+    <!-- Edit Photos Modal -->
+    <div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:2500">
+      <div style="background:var(--card);padding:18px;border-radius:14px;max-width:720px;width:96%;box-shadow:var(--shadow)">
+        <h3 style="margin-top:0">Edit photos</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;" id="editThumbs"></div>
+        <label style="display:block;margin-top:10px">Add more images</label>
+        <input id="editFiles" type="file" accept="image/*" multiple />
+        <label style="display:block;margin-top:10px">Folder label</label>
+        <input id="editLabel" type="text" placeholder="Folder label" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+        <label style="display:block;margin-top:10px">Date</label>
+        <input id="editDate" type="date" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="cancelEdit" class="theme-toggle" style="background:#fff">Cancel</button>
+          <button id="saveEdit" class="theme-toggle">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:2500">
+      <div style="background:var(--card);padding:18px;border-radius:14px;max-width:420px;width:92%;box-shadow:var(--shadow)">
+        <h3>Delete this folder?</h3>
+        <p style="color:var(--muted)">This will remove the folder from the gallery. If uploaded to Firebase, the Firestore record will be deleted (storage files may remain).</p>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="cancelDelete" class="theme-toggle" style="background:#fff">Cancel</button>
+          <button id="confirmDelete" class="theme-toggle" style="background:#ff9ccf">Delete</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Firebase (optional) - add your config in assets/firebase-config.js -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>

@@ -175,6 +175,12 @@ body {
   object-fit: cover;
 }
 
+/* Folder action buttons (edit/delete) */
+.folder-actions{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.folder-action{padding:6px 8px;border-radius:8px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.06);font-size:0.85rem;color:#e26d8a;border:1px solid rgba(226,109,138,0.08);cursor:pointer}
+.folder-action.delete{background:#ffeef0;color:#b83b5e}
+
+
 .folder p {
   font-size: 16px;
   color: #ff5f9e;
