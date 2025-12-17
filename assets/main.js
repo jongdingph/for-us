@@ -134,6 +134,42 @@
     });
   }
 
+  // ---------- Floating background hearts (soft, periodic) ----------
+  function initFloatingHearts(){
+    if (window._floatingHeartsInit) return; // only once
+    window._floatingHeartsInit = true;
+    const maxHearts = 14;
+    const intervalMs = 1200;
+    const hearts = new Set();
+
+    function spawn(){
+      if (document.hidden) return; // be polite
+      const h = document.createElement('div');
+      h.className = 'floating-heart';
+      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      // avoid spawning on very small screens too frequently
+      if (vw < 360 && Math.random() > 0.5) return;
+      const left = Math.floor(Math.random() * (vw - 40)) + 10;
+      h.style.left = `${left}px`;
+      const dur = 6000 + Math.floor(Math.random()*7000); // 6-13s
+      h.style.animation = `floatUp ${dur}ms linear forwards`;
+      document.body.appendChild(h);
+      hearts.add(h);
+      // cleanup after animation
+      setTimeout(()=>{ h.remove(); hearts.delete(h); }, dur + 200);
+      // prune if too many
+      if (hearts.size > maxHearts){
+        for (const el of hearts){ el.remove(); hearts.delete(el); if (hearts.size <= maxHearts) break; }
+      }
+    }
+
+    // initial burst
+    for (let i=0;i<3;i++) setTimeout(spawn, i * 300);
+    const id = setInterval(spawn, intervalMs);
+    // stop when page unloads
+    window.addEventListener('beforeunload', ()=> clearInterval(id));
+  }
+
   // ---------- Music widget ----------
   function initMusicWidget() {
     if (document.querySelector('.music-widget')) return; // already added
@@ -175,6 +211,7 @@
     showMemory();
     initTheme();
     initHearts();
+    initFloatingHearts();
     initMusicWidget();
     initScrollReveal();
   });
