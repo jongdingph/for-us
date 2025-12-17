@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'folder';
     div.dataset.folder = item.id;
     const img = document.createElement('img');
-    img.src = item.images[0];
+    const first = item.images && item.images[0];
+    img.src = (typeof first === 'string') ? first : (first && first.url) ? first.url : '';
     img.alt = item.label || 'Photos';
     const p = document.createElement('p');
     p.textContent = item.label || item.date || 'Untitled';
@@ -65,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
     grid.className = 'photo-grid show';
     item.images.forEach(src => {
       const im = document.createElement('img');
-      im.src = src;
+      const srcUrl = (typeof src === 'string') ? src : (src && src.url) ? src.url : '';
+      im.src = srcUrl;
       grid.appendChild(im);
       im.addEventListener('click', () => {
         lightbox.style.display = 'flex';
@@ -157,10 +159,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // populate UI
     currentEditing.images.forEach((src, idx)=>{
+      const url = (typeof src === 'string') ? src : (src && src.url) ? src.url : '';
       const thumb = document.createElement('div'); thumb.style.position='relative'; thumb.style.margin='6px';
-      thumb.innerHTML = `<img src="${src}" style="width:120px;height:80px;object-fit:cover;border-radius:8px">`;
+      thumb.innerHTML = `<img src="${url}" style="width:120px;height:80px;object-fit:cover;border-radius:8px">`;
       const rem = document.createElement('button'); rem.textContent='✕'; rem.style.position='absolute'; rem.style.right='2px'; rem.style.top='2px'; rem.style.background='rgba(0,0,0,0.5)'; rem.style.color='#fff'; rem.style.border='none'; rem.style.borderRadius='8px'; rem.style.cursor='pointer';
-      rem.addEventListener('click', ()=>{ // remove image
+      rem.addEventListener('click', async ()=>{ // remove image (and delete from storage if applicable)
+        try{
+          // if firebase source and this image has a path, delete it from storage
+          if (currentEditing.source==='fb' && storage){
+            const path = (src && src.path) ? src.path : null;
+            if (path){
+              try{ await storage.ref().child(path).delete(); }catch(e){ console.warn('Failed to delete storage file', e); }
+            }
+          }
+        }catch(e){ console.error('error removing image', e); }
         currentEditing.images.splice(idx,1); thumb.remove();
       });
       thumb.appendChild(rem); editThumbs.appendChild(thumb);
@@ -183,8 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // handle new files
       if (newFiles.length){
         if (currentEditing.source==='fb' && storage){
-          const upload = newFiles.map(f=>{ const ref = storage.ref().child(`gallery/${Date.now()}_${f.name}`); return ref.put(f).then(snap=>snap.ref.getDownloadURL()); });
-          const urls = await Promise.all(upload); currentEditing.images.push(...urls);
+          const upload = newFiles.map(f=>{ const ref = storage.ref().child(`gallery/${Date.now()}_${f.name}`); return ref.put(f).then(snap=> snap.ref.getDownloadURL().then(url => ({url, path: snap.ref.fullPath}))); });
+          const uploaded = await Promise.all(upload); currentEditing.images.push(...uploaded);
         } else {
           // read as dataURL
           const reads = newFiles.map(f=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); }));
@@ -194,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // update storage: Firestore update or localStorage replace
       if (currentEditing.source==='fb' && db){
+        // ensure images saved to Firestore are objects with url and path when available
         await db.collection('gallery').doc(currentEditing.docId).update({ label: newLabel || currentEditing.label, date: newDate || currentEditing.date, images: currentEditing.images });
       } else if (currentEditing.source==='local'){
         const raw = localStorage.getItem(STORAGE_KEY); const arr = raw ? JSON.parse(raw) : [];
@@ -204,11 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // update DOM folder and grid
       const folderEl = document.querySelector(`.folder[data-folder="${currentEditing.id}"]`);
       if (folderEl){
-        const img = folderEl.querySelector('img'); if (currentEditing.images[0]) img.src = currentEditing.images[0];
+        const img = folderEl.querySelector('img'); const first = currentEditing.images[0]; const firstUrl = (typeof first === 'string') ? first : (first && first.url) ? first.url : ''; if (firstUrl) img.src = firstUrl;
         const p = folderEl.querySelector('p'); p.textContent = newLabel || currentEditing.label || newDate || '';
       }
       const grid = document.getElementById(currentEditing.id);
-      if (grid){ grid.innerHTML = ''; currentEditing.images.forEach(src=>{ const im=document.createElement('img'); im.src=src; grid.appendChild(im); im.addEventListener('click', ()=>{ lightbox.style.display='flex'; lightboxImg.src = im.src; }); }); }
+      if (grid){ grid.innerHTML = ''; currentEditing.images.forEach(src=>{ const im=document.createElement('img'); const srcUrl = (typeof src === 'string') ? src : (src && src.url) ? src.url : ''; im.src = srcUrl; grid.appendChild(im); im.addEventListener('click', ()=>{ lightbox.style.display='flex'; lightboxImg.src = im.src; }); }); }
 
       editModal.style.display='none'; currentEditing = null;
     }catch(e){ console.error('save edit failed', e); alert('Failed to save changes.'); }
@@ -226,6 +239,20 @@ document.addEventListener('DOMContentLoaded', () => {
     try{
       if (id.startsWith('fb-') && db){
         const docId = id.slice(3);
+        // attempt to delete storage files referenced by the doc
+        try{
+          const doc = await db.collection('gallery').doc(docId).get();
+          if (doc.exists){
+            const data = doc.data();
+            const imgs = data.images || [];
+            for (const im of imgs){
+              const path = (typeof im === 'string') ? null : (im && im.path) ? im.path : null;
+              if (path && storage){
+                try{ await storage.ref().child(path).delete(); }catch(e){ console.warn('Failed to delete storage path', path, e); }
+              }
+            }
+          }
+        }catch(e){ console.warn('Failed to fetch doc for deletion cleanup', e); }
         await db.collection('gallery').doc(docId).delete();
       } else if (id.startsWith('local-')){
         const raw = localStorage.getItem(STORAGE_KEY); const arr = raw ? JSON.parse(raw) : [];
@@ -255,12 +282,13 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const uploadPromises = files.map(file => {
           const ref = storage.ref().child(`gallery/${Date.now()}_${file.name}`);
-          return ref.put(file).then(snap => snap.ref.getDownloadURL());
+          return ref.put(file).then(snap => snap.ref.getDownloadURL().then(url => ({ url, path: snap.ref.fullPath })));
         });
-        const urls = await Promise.all(uploadPromises);
-        const item = { id, label, date: label, images: urls };
-        // Save metadata to Firestore and render locally
-        await db.collection('gallery').add({ label: item.label, date: item.date, images: item.images, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        const uploaded = await Promise.all(uploadPromises); // array of {url, path}
+        // Save metadata (images with url+path) to Firestore and render locally using the returned doc id
+        const docRef = await db.collection('gallery').add({ label: label, date: label, images: uploaded, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        const fbId = 'fb-' + docRef.id;
+        const item = { id: fbId, label: label, date: label, images: uploaded };
         const folderEl = makeFolder(item);
         foldersWrapper.appendChild(folderEl);
         const gridEl = makeGrid(item);
@@ -324,7 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const fid = 'fb-' + doc.id;
         // avoid duplicates
         if (document.getElementById(fid)) return;
-        const item = { id: fid, label: data.label || data.date || 'Photos', date: data.date || '', images: data.images || [] };
+        // normalize images: if stored as array of strings, convert to objects {url}
+        const rawImages = data.images || [];
+        const images = rawImages.map(i => (typeof i === 'string') ? { url: i, path: null } : i);
+        const item = { id: fid, label: data.label || data.date || 'Photos', date: data.date || '', images };
         const folderEl = makeFolder(item);
         foldersWrapper.appendChild(folderEl);
         const gridEl = makeGrid(item);
