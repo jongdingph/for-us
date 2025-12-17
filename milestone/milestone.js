@@ -26,8 +26,8 @@
   }
 
   // sensible defaults (from page)
-  const DEFAULT_FIRST_MEET = '2025-05-19';
-  const DEFAULT_FIRST_DATE = '2025-05-22';
+  const DEFAULT_FIRST_MEET = '2024-03-09';
+  const DEFAULT_FIRST_DATE = '2025-04-19';
 
   const firstMeetDate = parseDateFrom(firstMeetEl, DEFAULT_FIRST_MEET);
   const firstDateDate = parseDateFrom(firstDateEl, DEFAULT_FIRST_DATE);
