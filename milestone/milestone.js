@@ -27,17 +27,29 @@
 
   // sensible defaults (from page)
   const DEFAULT_FIRST_MEET = '2024-03-09';
-  const DEFAULT_FIRST_DATE = '2025-04-19';
+  const DEFAULT_FIRST_DATE = '2024-04-19';
 
   const firstMeetDate = parseDateFrom(firstMeetEl, DEFAULT_FIRST_MEET);
   const firstDateDate = parseDateFrom(firstDateEl, DEFAULT_FIRST_DATE);
 
-  // user-specified recurring dates
-  const MONTHSARY_MONTH = 12, MONTHSARY_DAY = 28; // Dec 28
+  // recurring dates
+  // Monthsary: every month on day 28 -> set MONTHSARY_MONTH = null
+  const MONTHSARY_MONTH = null, MONTHSARY_DAY = 28; // monthly on day 28
+  // Anniversary: fixed on Aug 28
   const ANNIV_MONTH = 8, ANNIV_DAY = 28; // Aug 28
 
   function nextOccurrence(month, day){
     const now = new Date();
+    if (month === null || month === undefined){
+      // next monthly occurrence for given day
+      // try this month
+      let cand = new Date(now.getFullYear(), now.getMonth(), day, 0,0,0,0);
+      if (cand <= now){
+        // next month
+        cand = new Date(now.getFullYear(), now.getMonth()+1, day,0,0,0,0);
+      }
+      return cand;
+    }
     const year = now.getFullYear();
     let cand = new Date(year, month-1, day, 0,0,0,0);
     if (cand <= now) cand = new Date(year+1, month-1, day,0,0,0,0);
@@ -130,7 +142,7 @@
       const dn = document.createElement('div'); dn.className='date-num'; dn.textContent = day; cell.appendChild(dn);
 
       // check if this is monthsary or anniversary (compare month/day)
-      if (cur.getMonth()+1 === MONTHSARY_MONTH && cur.getDate() === MONTHSARY_DAY){
+      if ((MONTHSARY_MONTH === null && cur.getDate() === MONTHSARY_DAY) || (cur.getMonth()+1 === MONTHSARY_MONTH && cur.getDate() === MONTHSARY_DAY)){
         cell.classList.add('monthsary');
         const badge = document.createElement('div'); badge.className='badge'; badge.textContent='Monthsary'; badge.style.background='rgba(255,95,158,0.12)'; badge.style.color='#ff5f9e'; cell.appendChild(badge);
       }
