@@ -37,26 +37,30 @@
       <div class="song-box">
         <h2>Song for Me 💖</h2>
         <div class="song-list">
-          <div class="song-item"><p>Mirrors - Justin Timberlake</p>
-            <audio controls><source src="mirror.mp3" type="audio/mpeg"></audio>
+          <div class="song-item track">
+            <div class="cover" aria-hidden="true"></div>
+            <div class="track-meta">
+              <p class="track-title">Mirrors - Justin Timberlake</p>
+              <audio controls data-title="Mirrors - Justin Timberlake"><source src="mirror.mp3" type="audio/mpeg"></audio>
+            </div>
           </div>
           <div class="song-item"><p>About you - 1975</p>
-            <audio controls><source src="aboutyou.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="About You - The 1975"><source src="aboutyou.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Style - Taylor Swift</p>
-            <audio controls><source src="style.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Style - Taylor Swift"><source src="style.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>The Alchemy - Taylor Swift</p>
-            <audio controls><source src="alchemy.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="The Alchemy - Taylor Swift"><source src="alchemy.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>The Only Exception - Paramore</p>
-            <audio controls><source src="paramore.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="The Only Exception - Paramore"><source src="paramore.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Sure Thing - Miguel</p>
-            <audio controls><source src="surething.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Sure Thing - Miguel"><source src="surething.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>I Choose - Alessia</p>
-            <audio controls><source src="ichoose.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="I Choose - Alessia"><source src="ichoose.mp3" type="audio/mpeg"></audio>
           </div>
         </div>
       </div>
@@ -64,43 +68,61 @@
       <div class="song-box">
         <h2>Song for my love 💖</h2>
         <div class="song-list">
-          <div class="song-item"><p>Fireproof - One Direction</p>
-            <audio controls><source src="fireproof.mp3" type="audio/mpeg"></audio>
+          <div class="song-item track">
+            <div class="cover" aria-hidden="true"></div>
+            <div class="track-meta">
+              <p class="track-title">Fireproof - One Direction</p>
+              <audio controls data-title="Fireproof - One Direction"><source src="fireproof.mp3" type="audio/mpeg"></audio>
+            </div>
           </div>
           <div class="song-item"><p>Paraluman - Adie</p>
-            <audio controls><source src="paraluman.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Paraluman - Adie"><source src="paraluman.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Mahika - Adie</p>
-            <audio controls><source src="mahika.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Mahika - Adie"><source src="mahika.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Tahanan - Adie</p>
-            <audio controls><source src="tahanan.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Tahanan - Adie"><source src="tahanan.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Isa Lang - Arthur Nery</p>
-            <audio controls><source src="isalang.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Isa Lang - Arthur Nery"><source src="isalang.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Pelikula - Arthur Nery</p>
-            <audio controls><source src="pelikula.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Pelikula - Arthur Nery"><source src="pelikula.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Nobody Compares - One Direction</p>
-            <audio controls><source src="nobodycompares.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Nobody Compares - One Direction"><source src="nobodycompares.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Loved You First - One Direction</p>
-            <audio controls><source src="lovedyoufirst.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Loved You First - One Direction"><source src="lovedyoufirst.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Alonica - Lany</p>
-            <audio controls><source src="alonica.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Alonica - LANY"><source src="alonica.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>XXL - Lany</p>
-            <audio controls><source src="xxl.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="XXL - LANY"><source src="xxl.mp3" type="audio/mpeg"></audio>
           </div>
           <div class="song-item"><p>Pink Skies - Lany</p>
-            <audio controls><source src="pinkskies.mp3" type="audio/mpeg"></audio>
+            <audio controls data-title="Pink Skies - LANY"><source src="pinkskies.mp3" type="audio/mpeg"></audio>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <div id="nowPlaying" class="now-playing" aria-hidden="true">
+    <div class="np-left">
+      <div class="np-cover"></div>
+      <div class="np-info">
+        <div id="npTitle">No song playing</div>
+        <div id="npTime">00:00 / 00:00</div>
+      </div>
+    </div>
+    <div class="np-controls">
+      <button id="npPlay" class="btn">Play</button>
+      <div id="npProgress" class="np-progress"><div class="np-progress-bar"></div></div>
+    </div>
+  </div>
 
   <script src="song.js"></script>
   <script src="../assets/main.js"></script>
