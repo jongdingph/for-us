@@ -67,6 +67,7 @@ body {
 /* track row with cover */
 .track{display:flex;gap:12px;align-items:center}
 .track .cover{width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,#ffd2e0,#ffdfe8);box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+.track .cover{background-size:contain;background-position:center;background-repeat:no-repeat}
 .track .track-meta{flex:1;text-align:left}
 .track .track-title{font-weight:700;color:#6a3a4d;margin:0 0 6px}
 .track audio{width:100%;opacity:0.98}
@@ -75,6 +76,7 @@ body {
 .now-playing{position:fixed;left:12px;right:12px;bottom:14px;background:linear-gradient(180deg,#fff,#fff7fb);border-radius:12px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 20px 40px rgba(224,85,134,0.08);z-index:1100;gap:12px}
 .now-playing .np-left{display:flex;align-items:center;gap:10px}
 .now-playing .np-cover{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,#ffd2e0,#ffdfe8)}
+.now-playing .np-cover{background-size:contain;background-position:center;background-repeat:no-repeat}
 .now-playing .np-info{font-size:0.9rem;color:#5a2f3f}
 .now-playing .np-info #npTitle{font-weight:700}
 .now-playing .np-controls{display:flex;align-items:center;gap:12px}
