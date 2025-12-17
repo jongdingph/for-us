@@ -161,6 +161,12 @@
 .letter .sender { display:block;font-size:0.78rem;color:#8b6b6b;margin-bottom:6px }
 .letter .meta { display:block;font-size:0.72rem;color:#a88; margin-top:8px; text-align:right }
 
+/* message actions (edit) */
+.msg-actions{display:none;position:absolute;top:6px;right:6px}
+.letter:hover .msg-actions{display:block}
+.msg-actions .edit-btn{background:transparent;border:none;font-size:14px;color:rgba(0,0,0,0.45);cursor:pointer;padding:6px;border-radius:6px}
+.msg-actions .edit-btn:hover{background:rgba(0,0,0,0.04)}
+
 /* Date under each letter */
 .letter .date {
   display: block;
