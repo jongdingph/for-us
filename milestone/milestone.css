@@ -218,6 +218,20 @@ body {
 .calendar-grid .day-cell .corner-badge.next{background:#ff5f9e;color:#fff}
 /* today pill */
 .calendar-grid .day-cell .today-badge{position:absolute;top:6px;left:6px;background:#fff2f6;color:#e05586;padding:3px 6px;border-radius:8px;font-size:0.68rem;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.04)}
+
+/* corner badge circular icon */
+.calendar-grid .day-cell .corner-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;padding:0;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,0.06)}
+.calendar-grid .day-cell .corner-badge.monthsary{background:linear-gradient(180deg,#ff7fa6,#ff5f9e);color:#fff}
+.calendar-grid .day-cell .corner-badge.anniv{background:linear-gradient(180deg,#ffd88a,#ffbf5a);color:#5a2f00}
+.calendar-grid .day-cell .corner-badge.small{width:26px;height:26px;font-size:11px}
+
+/* large badge (bottom-right) — show icon and short text; hide full text on small screens */
+.calendar-grid .day-cell .badge{position:absolute;bottom:8px;right:8px;padding:6px 8px;border-radius:10px;font-size:0.72rem;display:flex;align-items:center;gap:6px}
+.calendar-grid .day-cell .badge .badge-text{font-weight:700}
+@media (max-width:640px){
+  .calendar-grid .day-cell .badge .badge-text{display:none}
+  .calendar-grid .day-cell .corner-badge{width:24px;height:24px;font-size:12px}
+}
 .calendar-grid .day-cell.monthsary{border:2px solid rgba(255,95,158,0.18)}
 .calendar-grid .day-cell.anniv{border:2px solid rgba(128,50,110,0.12)}
 .calendar-grid .day-cell .label{display:block;margin-top:26px;color:#e05586;font-size:0.82rem;text-align:center}

@@ -150,29 +150,37 @@
       if ((MONTHSARY_MONTH === null && cur.getDate() === MONTHSARY_DAY) || (cur.getMonth()+1 === MONTHSARY_MONTH && cur.getDate() === MONTHSARY_DAY)){
         cell.classList.add('monthsary');
         const corner = document.createElement('div');
-        // if this is the upcoming monthsary
+        // use icon and semantic title
         if (cur.toDateString() === nextM.toDateString()){
-          corner.className = 'corner-badge small next';
-          corner.textContent = 'Next M';
+          corner.className = 'corner-badge monthsary small next';
+          corner.textContent = '⭐💖';
+          corner.setAttribute('title','Next Monthsary');
+          corner.setAttribute('aria-label','Next Monthsary');
         } else {
-          corner.className = 'corner-badge';
-          corner.textContent = 'M';
+          corner.className = 'corner-badge monthsary';
+          corner.textContent = '💖';
+          corner.setAttribute('title','Monthsary');
+          corner.setAttribute('aria-label','Monthsary');
         }
         cell.appendChild(corner);
-        const badge = document.createElement('div'); badge.className='badge'; badge.textContent='Monthsary'; badge.style.background='rgba(255,95,158,0.12)'; badge.style.color='#ff5f9e'; cell.appendChild(badge);
+        const badge = document.createElement('div'); badge.className='badge monthsary'; badge.innerHTML='💖 <span class="badge-text">Monthsary</span>'; badge.style.background='rgba(255,95,158,0.06)'; badge.style.color='#ff5f9e'; cell.appendChild(badge);
       }
       if (cur.getMonth()+1 === ANNIV_MONTH && cur.getDate() === ANNIV_DAY){
         cell.classList.add('anniv');
         const corner = document.createElement('div');
         if (cur.toDateString() === nextA.toDateString()){
-          corner.className = 'corner-badge small next';
-          corner.textContent = 'Next A';
+          corner.className = 'corner-badge anniv small next';
+          corner.textContent = '⭐💍';
+          corner.setAttribute('title','Next Anniversary');
+          corner.setAttribute('aria-label','Next Anniversary');
         } else {
-          corner.className = 'corner-badge';
-          corner.textContent = 'A';
+          corner.className = 'corner-badge anniv';
+          corner.textContent = '💍';
+          corner.setAttribute('title','Anniversary');
+          corner.setAttribute('aria-label','Anniversary');
         }
         cell.appendChild(corner);
-        const badge = document.createElement('div'); badge.className='badge'; badge.textContent='Anniversary'; badge.style.background='rgba(224,85,134,0.08)'; badge.style.color='#e05586'; cell.appendChild(badge);
+        const badge = document.createElement('div'); badge.className='badge anniv'; badge.innerHTML='💍 <span class="badge-text">Anniversary</span>'; badge.style.background='rgba(224,85,134,0.06)'; badge.style.color='#e05586'; cell.appendChild(badge);
       }
 
       // mark today
