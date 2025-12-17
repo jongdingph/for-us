@@ -103,7 +103,14 @@
     function setTheme(t) {
       root.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
       localStorage.setItem('theme', t);
+      // update toggle content for accessibility
+      if (toggle){
+        toggle.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+        toggle.textContent = t === 'dark' ? '🌙 Dark' : '☀️ Light';
+      }
     }
+    // initialize toggle label
+    setTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
     if (toggle) toggle.addEventListener('click', () => {
       const now = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       setTheme(now);

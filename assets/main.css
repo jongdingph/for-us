@@ -47,6 +47,10 @@ body{font-family:'Quicksand',system-ui,Arial;background:var(--bg);color:var(--te
 
 .theme-toggle{background:linear-gradient(135deg,var(--accent),#ffd1e9);border:none;padding:8px;border-radius:999px;cursor:pointer;box-shadow:var(--shadow);}
 
+/* Theme toggle pinned to left and follows on scroll */
+#themeToggle{position:fixed;left:14px;top:120px;z-index:1302;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 10px 30px rgba(224,85,134,0.12);cursor:pointer}
+@media (max-width:900px){ #themeToggle{left:10px;top:84px;padding:8px 10px} }
+
 /* Daily message card */
 .daily-card{max-width:720px;margin:20px auto;padding:18px;border-radius:16px;background:linear-gradient(180deg,var(--card),var(--accent-2));box-shadow:var(--shadow);text-align:center;opacity:0;transform:translateY(6px);transition:all .6s ease}
 .daily-card.show{opacity:1;transform:none}
