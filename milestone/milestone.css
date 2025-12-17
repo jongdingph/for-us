@@ -211,9 +211,20 @@ body {
 .calendar-grid .day-cell{min-height:84px;background:#fff;border-radius:10px;padding:8px;position:relative;box-shadow:0 6px 14px rgba(0,0,0,0.04)}
 .calendar-grid .day-cell .date-num{position:absolute;top:8px;left:8px;font-weight:700;color:#6a4b57}
 .calendar-grid .day-cell .badge{position:absolute;bottom:8px;right:8px;padding:4px 6px;border-radius:8px;font-size:0.72rem}
+.calendar-grid .day-cell .corner-badge{position:absolute;top:6px;right:6px;background:#ffeef6;color:#c84a7b;border-radius:10px;padding:3px 6px;font-size:0.66rem;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.06)}
+.calendar-grid .day-cell.today{box-shadow:0 10px 30px rgba(224, 93, 135, 0.08);border:2px solid rgba(255,95,158,0.18)}
+.calendar-grid .day-cell .corner-badge.small{padding:2px 5px;font-size:0.6rem;border-radius:8px}
+/* smaller, highlighted corner for upcoming next dates */
+.calendar-grid .day-cell .corner-badge.next{background:#ff5f9e;color:#fff}
+/* today pill */
+.calendar-grid .day-cell .today-badge{position:absolute;top:6px;left:6px;background:#fff2f6;color:#e05586;padding:3px 6px;border-radius:8px;font-size:0.68rem;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.04)}
 .calendar-grid .day-cell.monthsary{border:2px solid rgba(255,95,158,0.18)}
 .calendar-grid .day-cell.anniv{border:2px solid rgba(128,50,110,0.12)}
 .calendar-grid .day-cell .label{display:block;margin-top:26px;color:#e05586;font-size:0.82rem;text-align:center}
+
+.calendar-actions{margin-top:12px;text-align:right}
+.calendar-actions .btn{background:#e26d8a;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+.calendar-actions .btn:hover{background:#d45777}
 
 @media (max-width:640px){
   .calendar-grid .day-cell{min-height:68px;padding:6px}
