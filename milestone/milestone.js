@@ -1,5 +1,16 @@
 // Milestone dynamic stats and countdowns
 (function(){
+  // ensure timeline clears fixed navbar by measuring nav height
+  function adjustTimelinePadding(){
+    const nav = document.querySelector('.navbar');
+    const tl = document.querySelector('.timeline');
+    if (!nav || !tl) return;
+    const navH = nav.offsetHeight || 72;
+    // leave small gap
+    tl.style.paddingTop = (navH + 18) + 'px';
+  }
+  window.addEventListener('resize', adjustTimelinePadding);
+  window.addEventListener('load', adjustTimelinePadding);
   const $ = sel => document.querySelector(sel);
   const firstMeetEl = Array.from(document.querySelectorAll('.milestone-item')).find(a=>a.querySelector('.milestone-title') && a.querySelector('.milestone-title').textContent.trim().toLowerCase().includes('first meet'));
   const firstDateEl = Array.from(document.querySelectorAll('.milestone-item')).find(a=>a.querySelector('.milestone-title') && a.querySelector('.milestone-title').textContent.trim().toLowerCase().includes('first date'));
