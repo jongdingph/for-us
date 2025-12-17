@@ -139,6 +139,17 @@ body {
   position: relative;
 }
 
+.plan-actions{display:flex;gap:8px;margin-bottom:10px}
+.plan-input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid #f4d6df;background:#fff}
+.plan-actions .add-plan-btn{padding:10px 12px;border-radius:10px}
+
+.filter-bar{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
+.filter-bar button{padding:8px 12px;border-radius:10px;border:1px solid transparent;background:#fff;color:#e05586;cursor:pointer}
+.filter-bar button.active{background:#e26d8a;color:#fff;border-color:rgba(0,0,0,0.03)}
+
+.plan-item.done{opacity:0.6;text-decoration:line-through;background:#fff6f8}
+.plan-item .delete-btn{margin-left:8px;background:transparent;border:none;color:#c04a6a;cursor:pointer}
+
 .plan-item p {
   flex: 1;
   font-size: 15px;

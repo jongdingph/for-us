@@ -16,69 +16,111 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+// Determine whether Firestore is available
+const hasFirestore = typeof db !== 'undefined' && db;
 
-// =======================
-// ADD PLAN FUNCTIONALITY
-// =======================
-const addPlanButtons = document.querySelectorAll('.add-plan-btn');
+// localStorage fallback key
+const LS_KEY = 'local_plans_v1';
 
-addPlanButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const planBox = button.closest('.plan-box');
-    const planType = planBox.dataset.plan;
+function readLocal(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)) || []; }catch(e){ return []; }
+}
+function writeLocal(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
 
-    const planText = prompt("Enter your plan:");
-    if (!planText) return;
-
-    // Save plan to Firestore
-    db.collection('plans').add({
-      type: planType,
-      text: planText,
-      done: false,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      displayPlans(); // Refresh displayed plans
-    }).catch(err => console.error("Error adding plan:", err));
-  });
-});
-
-// =======================
-// DISPLAY PLANS FUNCTION
-// =======================
-function displayPlans() {
-  // Clear existing content
-  const planBoxes = document.querySelectorAll('.plan-box');
-  planBoxes.forEach(box => {
-    box.querySelector('.plan-content').innerHTML = '';
-  });
-
-  // Fetch all plans from Firestore
-  db.collection('plans').orderBy('timestamp').get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const planBox = document.querySelector(`.plan-box[data-plan="${data.type}"]`);
-      if (!planBox) return;
-
-      const planItem = document.createElement('div');
-      planItem.classList.add('plan-item');
-      planItem.innerHTML = `
-        <input type="checkbox" class="plan-checkbox">
-        <p>${data.text}</p>
-      `;
-      planBox.querySelector('.plan-content').appendChild(planItem);
-
-      // Checkbox click removes plan from Firestore
-      planItem.querySelector('.plan-checkbox').addEventListener('click', () => {
-        db.collection('plans').doc(doc.id).delete();
-        planItem.remove();
-      });
-    });
-  }).catch(err => console.error("Error fetching plans:", err));
+// Generic addPlan that uses Firestore if available otherwise localStorage
+function addPlan(type, text){
+  const item = { id: 'local_' + Date.now(), type, text, done: false, timestamp: Date.now() };
+  if (hasFirestore){
+    return db.collection('plans').add({ type, text, done: false, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(()=>displayPlans()).catch(err=>console.error(err));
+  } else {
+    const arr = readLocal(); arr.push(item); writeLocal(arr); displayPlans(); return Promise.resolve();
+  }
 }
 
-// =======================
-// INITIAL LOAD
-// =======================
-window.addEventListener('DOMContentLoaded', displayPlans);
+function updatePlanDone(id, done){
+  if (hasFirestore && id && !id.startsWith('local_')){
+    return db.collection('plans').doc(id).update({done});
+  } else {
+    const arr = readLocal(); const idx = arr.findIndex(x=>x.id===id); if (idx>=0){ arr[idx].done = done; writeLocal(arr); displayPlans(); }
+    return Promise.resolve();
+  }
+}
+
+function deletePlan(id){
+  if (hasFirestore && id && !id.startsWith('local_')){
+    return db.collection('plans').doc(id).delete().then(()=>displayPlans());
+  } else {
+    const arr = readLocal().filter(x=>x.id!==id); writeLocal(arr); displayPlans(); return Promise.resolve();
+  }
+}
+
+let currentFilter = 'all';
+
+function renderPlanItem(plan, planBox){
+  const planItem = document.createElement('div');
+  planItem.className = 'plan-item' + (plan.done? ' done':'');
+  planItem.dataset.id = plan.id || '';
+  planItem.innerHTML = `
+    <input type="checkbox" class="plan-checkbox" ${plan.done? 'checked':''}>
+    <p>${escapeHtml(plan.text)}</p>
+    <button class="delete-btn" title="Delete">×</button>
+  `;
+  const cb = planItem.querySelector('.plan-checkbox');
+  cb.addEventListener('change', ()=>{ updatePlanDone(plan.id, cb.checked); });
+  planItem.querySelector('.delete-btn').addEventListener('click', ()=>{ if (confirm('Delete this plan?')) deletePlan(plan.id); });
+  planBox.querySelector('.plan-content').appendChild(planItem);
+}
+
+function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+function displayPlans(){
+  const planBoxes = document.querySelectorAll('.plan-box');
+  planBoxes.forEach(box => box.querySelector('.plan-content').innerHTML = '');
+
+  if (hasFirestore){
+    db.collection('plans').orderBy('timestamp').get().then(snapshot=>{
+      const docs = [];
+      snapshot.forEach(doc=>{ const d = doc.data(); docs.push(Object.assign({id:doc.id}, d)); });
+      docs.forEach(d=>{
+        const pb = document.querySelector(`.plan-box[data-plan="${d.type}"]`);
+        if (!pb) return;
+        if (currentFilter==='active' && d.done) return;
+        if (currentFilter==='done' && !d.done) return;
+        renderPlanItem(d, pb);
+      });
+    }).catch(err=>console.error('Error fetching plans:',err));
+  } else {
+    const arr = readLocal();
+    arr.forEach(d=>{
+      const pb = document.querySelector(`.plan-box[data-plan="${d.type}"]`);
+      if (!pb) return;
+      if (currentFilter==='active' && d.done) return;
+      if (currentFilter==='done' && !d.done) return;
+      renderPlanItem(d, pb);
+    });
+  }
+}
+
+// wire up add buttons and inputs
+function initUI(){
+  document.querySelectorAll('.plan-box').forEach(box=>{
+    const btn = box.querySelector('.add-plan-btn');
+    const input = box.querySelector('.plan-input');
+    btn.addEventListener('click', ()=>{
+      const text = (input.value||'').trim(); if (!text) return; addPlan(box.dataset.plan, text).then(()=>{ input.value=''; });
+    });
+    input.addEventListener('keydown', (e)=>{ if (e.key==='Enter'){ btn.click(); } });
+  });
+
+  // filters
+  document.querySelectorAll('.filter-bar button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-bar button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); currentFilter = b.dataset.filter; displayPlans();
+    });
+  });
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{ initUI(); displayPlans(); });
 
 // Hamburger behavior is handled in assets/main.js
