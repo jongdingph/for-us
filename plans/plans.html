@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Plans</title>
+  <!-- Add Firebase SDKs in the <head> -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="plans.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="logo">♡ Us</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../gallery/gallery.html">Gallery</a></li>
+      <li><a href="../letter/letter.html">Letter</a></li>
+      <li><a href="../milestone/milestone.html">Milestones</a></li>
+      <li><a href="../song/song.html">Song</a></li>
+      <li><a href="plans.html" class="active">Plans</a></li>
+    </ul>
+  </nav>
+
+  <!-- PLANS SECTION -->
+  <section class="plans-section">
+    <h1>Our Future Plans</h1>
+    <p class="intro-text">Add your upcoming plans and they’ll stay here even if you close the website. 💖</p>
+
+    <div class="plans-container">
+      <div class="plan-box" data-plan="gala">
+        <h2>Gala</h2>
+        <div class="plan-content"></div>
+        <button class="add-plan-btn">+ Add Plan</button>
+      </div>
+      <div class="plan-box" data-plan="monthsary">
+        <h2>Monthsary</h2>
+        <div class="plan-content"></div>
+        <button class="add-plan-btn">+ Add Plan</button>
+      </div>
+      <div class="plan-box" data-plan="anniversary">
+        <h2>Anniversary</h2>
+        <div class="plan-content"></div>
+        <button class="add-plan-btn">+ Add Plan</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="plans.js"></script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+/* ============================
+   GALLERY PAGE - CUTE PINK THEME
+============================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Quicksand', sans-serif;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+  background: #ffeef4;
+  overflow-x: hidden;
+}
+
+/* ----------------------------
+   NAVBAR
+---------------------------- */
+/* ============================
+   FIXED NAVIGATION BAR (MATCHES HOME PAGE)
+   ============================ */
+
+/* Desktop Navbar */
+.navbar {
+  width: 100%;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #f0e6eb;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: #e08dad;
+}
+
+/* Desktop Navigation Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 15px;
+  color: #555;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: #f8e9ee;
+  color: #e26d8a;
+}
+
+/* Hamburger (Mobile) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 28px;
+  height: 3px;
+  background: #e26d8a;
+  border-radius: 3px;
+}
+
+/* ============================
+   MOBILE MENU
+   (Matches Home Page exactly)
+   ============================ */
+@media screen and (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    width: 200px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    gap: 15px;
+
+    /* hidden by default */
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-links a {
+    font-size: 16px;
+  }
+}
+
+
+/* ----------------------------
+   PAGE PADDING FIX
+---------------------------- */
+.gallery-section {
+  padding-top: 120px; /* Avoid overlap with navbar */
+}
+
+/* ----------------------------
+   GALLERY TITLE
+---------------------------- */
+.gallery-section h1 {
+  text-align: center;
+  font-size: 40px;
+  color: #ff5f9e;
+  margin-bottom: 30px;
+}
+
+/* ----------------------------
+   FOLDER GRID
+---------------------------- */
+.memory-folders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+}
+
+.folder {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
+  cursor: pointer;
+  animation: fadeUp 0.6s ease;
+}
+
+.folder:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.folder.active-folder {
+  border: 2px solid #ff8fb9;
+  background: #fff6fa;
+}
+
+.folder img {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  object-fit: cover;
+}
+
+.folder p {
+  font-size: 16px;
+  color: #ff5f9e;
+  font-weight: 600;
+}
+
+/* ----------------------------
+   PHOTO GRID
+---------------------------- */
+.photo-grid {
+  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  width: 92%;
+  max-width: 1000px;
+  margin: 20px auto 40px auto;
+}
+
+.photo-grid.show {
+  display: grid;
+  animation: fadeIn 0.6s ease;
+}
+
+.photo-grid img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.photo-grid img:hover {
+  transform: scale(1.03);
+}
+
+/* ----------------------------
+   LIGHTBOX
+---------------------------- */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.lightbox img {
+  width: 90%;
+  max-width: 500px;
+  border-radius: 15px;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 50px;
+  color: white;
+  cursor: pointer;
+}
+
+/* ----------------------------
+   ANIMATIONS
+---------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------------------
+   MOBILE RESPONSIVE
+---------------------------- */
+@media (max-width: 768px) {
+  
+  /* Turn desktop nav into mobile sliding nav */
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    width: 220px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    gap: 15px;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    display: flex;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .gallery-section h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .folder img {
+    width: 75px;
+    height: 75px;
+  }
+}

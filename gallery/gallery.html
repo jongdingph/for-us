@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Gallery</title>
+  <link rel="stylesheet" href="gallery.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="logo">♡ Us</div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="../letter/letter.html">Letter</a></li>
+      <li><a href="../milestone/milestone.html">Milestones</a></li>
+      <li><a href="../song/song.html">Song</a></li>
+      <li><a href="../plans/plans.html">Plans</a></li>
+    </ul>
+  </nav>
+
+  <!-- GALLERY SECTION -->
+  <section class="gallery-section">
+    <h1>Our Memories</h1>
+
+    <div class="memory-folders">
+      <div class="folder" data-folder="may19">
+        <img src="https://static.vecteezy.com/system/resources/previews/000/547/596/original/hearts-icons-vectors-illustrations.jpg">
+        <p>May 19, 2025</p>
+      </div>
+
+      <div class="folder" data-folder="may22">
+        <img src="https://static.vecteezy.com/system/resources/previews/000/547/596/original/hearts-icons-vectors-illustrations.jpg">
+        <p>May 22, 2025</p>
+      </div>
+
+      <div class="folder" data-folder="nov21">
+        <img src="https://static.vecteezy.com/system/resources/previews/000/547/596/original/hearts-icons-vectors-illustrations.jpg">
+        <p>November 21, 2025</p>
+      </div>
+
+      <div class="folder" data-folder="nov28">
+        <img src="https://static.vecteezy.com/system/resources/previews/000/547/596/original/hearts-icons-vectors-illustrations.jpg">
+        <p>November 28, 2025</p>
+      </div>
+    </div>
+
+    <!-- PHOTO GRIDS -->
+    <div id="may19" class="photo-grid">
+      <img src="../images/IMG_20250519_184649.jpg">
+      <img src="../images/IMG_20250519_185320.jpg">
+      <img src="../images/IMG_20250519_185322.jpg">
+    </div>
+
+    <div id="may22" class="photo-grid">
+      <img src="../images/IMG_20250522_173837.jpg">
+      <img src="../images/IMG_20250522_185104.jpg">
+      <img src="../images/IMG_20250522_185945.jpg">
+      <img src="../images/IMG_20250522_185951.jpg">
+      <img src="../images/IMG_20250522_194026.jpg">
+    </div>
+
+    <div id="nov21" class="photo-grid">
+      <img src="../images/IMG_20251122_210519.jpg">
+      <img src="../images/IMG_20251122_210527.jpg">
+      <img src="../images/IMG_20251122_211407.jpg">
+      <img src="../images/IMG_20251122_222919.jpg">
+      <img src="../images/IMG_20251122_234830.jpg">
+    </div>
+
+    <div id="nov28" class="photo-grid">
+      <img src="../images/IMG_20251128_193337.jpg">
+      <img src="../images/IMG_20251128_193638.jpg">
+      <img src="../images/IMG_20251128_201646.jpg">
+      <img src="../images/IMG_20251128_201658.jpg">
+      <img src="../images/p1.jpg">
+      <img src="../images/p2.jpg">
+      <img src="../images/p3.jpg">
+      <img src="../images/p4.jpg">
+      <img src="../images/p5.jpg">
+      <img src="../images/p6.jpg">
+      <img src="../images/p7.jpg">
+      <img src="../images/p8.jpg">
+    </div>
+
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <img id="lightboxImg">
+  </div>
+
+  <script src="gallery.js"></script>
+</body>
+</html>
