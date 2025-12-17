@@ -56,11 +56,17 @@
   // ---------- Countdown timers ----------
   function formatCountdown(ms) {
     if (ms <= 0) return '💕 Today is the day!';
-    const sec = Math.floor(ms / 1000);
-    const days = Math.floor(sec / 86400);
-    const hours = Math.floor((sec % 86400) / 3600);
-    const mins = Math.floor((sec % 3600) / 60);
-    return `💕 ${days} days, ${hours} hours left`;
+    const totalSec = Math.floor(ms / 1000);
+    const days = Math.floor(totalSec / 86400);
+    const hours = Math.floor((totalSec % 86400) / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    const parts = [];
+    if (days) parts.push(`${days}d`);
+    if (hours || days) parts.push(`${hours}h`);
+    if (mins || hours || days) parts.push(`${mins}m`);
+    parts.push(`${secs}s`);
+    return `💕 ${parts.join(' ')}`;
   }
 
   function setupCountdown(id, dateStr, label) {
@@ -72,12 +78,14 @@
       const diff = target - now;
       if (diff <= 0) {
         el.textContent = `💕 Today is our ${label}!`;
-      } else {
-        el.textContent = `${formatCountdown(diff)} until our ${label}`;
+        return;
       }
+      el.textContent = `${formatCountdown(diff)} until our ${label}`;
     }
     tick();
-    setInterval(tick, 1000);
+    // store interval id on element so it can be cleared if needed
+    if (el._countdownInterval) clearInterval(el._countdownInterval);
+    el._countdownInterval = setInterval(tick, 1000);
   }
 
   // ---------- Memory of the Day ----------
