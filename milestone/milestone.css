@@ -168,14 +168,14 @@ body {
 }
 
 /* Milestone page tweaks */
-.timeline{max-width:980px;margin:20px auto;padding:22px}
+.timeline{max-width:980px;margin:20px auto;padding:22px;padding-top:120px}
 .milestone-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px}
 .stat-card{background:linear-gradient(180deg,#fff,#fff7fb);padding:14px;border-radius:12px;box-shadow:0 8px 20px rgba(255,140,180,0.06);text-align:center}
 .stat-title{font-size:0.9rem;color:#8b6b6b}
 .stat-value{font-size:1.15rem;font-weight:700;color:#ff5f9e;margin-top:6px}
 .stat-sub{font-size:0.82rem;color:#b07b8f;margin-top:6px}
 
-.milestone-item{padding:14px 16px;margin:12px 0;border-radius:12px;background:linear-gradient(180deg, #fff, #fff7fb);box-shadow:0 8px 22px rgba(255,140,180,0.06);opacity:0;transform:translateY(14px);transition:all .5s cubic-bezier(.2,.9,.3,1)}
+.milestone-item{padding:18px 18px;margin:18px 0;border-radius:14px;background:linear-gradient(180deg, #fff, #fff7fb);box-shadow:0 10px 30px rgba(255,140,180,0.08);opacity:0;transform:translateY(14px);transition:all .5s cubic-bezier(.2,.9,.3,1)}
 .milestone-item.show{opacity:1;transform:none}
 .milestone-title{font-weight:700;color:#e05586}
 .milestone-date{color:#a87b8f;font-size:0.95rem;margin-top:6px}
