@@ -171,65 +171,25 @@
   }
 
   function initHearts() {
-    // Robust handler: support touch and click, keyboard, and ensure nearest nav is used.
-    document.querySelectorAll('.hamburger').forEach(h => {
-      // find closest nav parent, then the nav-links inside it
-      const navParent = h.closest('nav') || h.parentElement;
-      const nav = navParent ? navParent.querySelector('.nav-links') : null;
-      if (!nav) return;
-      h.setAttribute('role','button');
-      h.setAttribute('aria-label','Toggle navigation');
-      h.setAttribute('aria-expanded','false');
-      h.setAttribute('tabindex','0');
+    // Simple, safe heart click/touch handler. Keeps behaviour lightweight and
+    // avoids referencing any undefined variables that previously caused
+    // runtime errors and prevented other initialization (like hamburger).
+    document.addEventListener('click', (e) => {
+      try{
+        // don't spawn hearts when interacting with the nav or actionable controls
+        if (e.target.closest('nav') || e.target.closest('a') || e.target.closest('button')) return;
+        createHeart(e.clientX, e.clientY);
+      }catch(err){ /* noop */ }
+    }, {passive:true});
 
-      const toggle = (e)=>{
-        if (e) e.stopPropagation();
-        const open = h.classList.toggle('open');
-        nav.classList.toggle('active', open);
-        h.setAttribute('aria-expanded', String(open));
-        // when open, prevent body scroll on small screens
-        if (open) document.body.style.overflow = 'hidden'; else document.body.style.overflow = '';
-      };
-
-      h.addEventListener('click', toggle);
-      h.addEventListener('touchstart', (ev)=>{ ev.preventDefault(); toggle(ev); }, {passive:false});
-
-      // keyboard activation (Enter / Space)
-      h.addEventListener('keydown', (ev)=>{
-        if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); toggle(ev); }
-      });
-
-      // close when clicking a link inside this nav
-      nav.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=>{
-        h.classList.remove('open'); nav.classList.remove('active'); h.setAttribute('aria-expanded','false'); document.body.style.overflow = '';
-      }));
-
-      // close when clicking outside
-      document.addEventListener('click', (ev)=>{
-        if (!nav.contains(ev.target) && !h.contains(ev.target)){
-          h.classList.remove('open'); nav.classList.remove('active'); h.setAttribute('aria-expanded','false'); document.body.style.overflow = '';
-        }
-      });
-    });
-      const left = Math.floor(Math.random() * (vw - 40)) + 10;
-      h.style.left = `${left}px`;
-      const dur = 6000 + Math.floor(Math.random()*7000); // 6-13s
-      h.style.animation = `floatUp ${dur}ms linear forwards`;
-      document.body.appendChild(h);
-      hearts.add(h);
-      // cleanup after animation
-      setTimeout(()=>{ h.remove(); hearts.delete(h); }, dur + 200);
-      // prune if too many
-      if (hearts.size > maxHearts){
-        for (const el of hearts){ el.remove(); hearts.delete(el); if (hearts.size <= maxHearts) break; }
-      }
-    }
-
-    // initial burst
-    for (let i=0;i<3;i++) setTimeout(spawn, i * 300);
-    const id = setInterval(spawn, intervalMs);
-    // stop when page unloads
-    window.addEventListener('beforeunload', ()=> clearInterval(id));
+    document.addEventListener('touchstart', (e) => {
+      try{
+        const t = e.touches && e.touches[0];
+        if (!t) return;
+        if (e.target.closest('nav') || e.target.closest('a') || e.target.closest('button')) return;
+        createHeart(t.clientX, t.clientY);
+      }catch(err){ /* noop */ }
+    }, {passive:true});
   }
 
   // ---------- Music widget ----------
